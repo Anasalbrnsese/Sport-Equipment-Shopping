@@ -1,0 +1,38 @@
+<%- include('../partails/header') -%>
+    <%- include('../partails/navbar') -%>
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-sm-6 col-md-4 d-flex">
+                    <section class="w-100" style="background-color: #eee;">
+                        <div class="card text-black d-flex flex-column h-100">
+                            <img src="<%= product.imageProduct %>" class="card-img-top img-fluid"
+                                alt="<%= product.titleProduct %>" />
+                            <div class="card-body flex-grow-1 d-flex flex-column">
+                                <div class="text-center">
+                                    <h5 class="card-title">
+                                        <%= product.titleProduct %>
+                                    </h5>
+                                    <p class="text-muted mb-4">
+                                        <%= product.descriptionProduct %>
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>
+                                        <%= product.titleProduct %>
+                                    </span>
+                                    <span>
+                                        Price test:
+                                        $<%= product.priceProduct %>
+                                    </span>
+                                </div>
+                                <!-- Add to Cart Button as Link -->
+                                <div class="text-center mt-auto">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partails/footer') -%>
