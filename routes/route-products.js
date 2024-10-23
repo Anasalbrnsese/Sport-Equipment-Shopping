@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
         }
 
         // Render the view and pass the product chunks to the template
-        res.render('products/index', { chunk: chunk });
+        res.render('layout/index', { chunk: chunk });
     } catch (err) {
         console.log(err);
         res.status(500).send('Server error');  // Handle errors
@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
     try {
         const product = await Product.findOne({ _id: req.params.id });  // Use async/await
         if (product) {
-            res.render('products/showProducts', { product: product });  // Make sure the path is correct
+            res.render('layout/showProducts', { product: product });  // Make sure the path is correct
         } else {
             res.status(404).send('Product not found');
         }

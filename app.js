@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require("body-parser");
-const router = require('./routes/products');
+const router = require('./routes/route-products');
 const app = express();
 const db = require('./config/database');
 
@@ -16,15 +16,13 @@ app.use(express.static('node_modules'));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Root route to render a home page
-app.get('/', (req, res) => {
-    // Render an 'index' view from the views folder
-    res.render('./products/index');  // Ensure you have a views/index.ejs file
-});
-
 // Use the products router for /product route
 app.use('/product', router);
 
+
+app.get('/add', (req, res) => {
+    res.render('layout/addProducts');
+});
 // Start the server
 app.listen(3000, function () {
     console.log("Running on port 3000.");
