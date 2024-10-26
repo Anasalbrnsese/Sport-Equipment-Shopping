@@ -1,0 +1,22 @@
+.testclass {
+    background-color: black;
+    color: white;
+    font-size: xx-large;
+    border-radius: 14px;
+    width: 40%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    align-items: center;
+    justify-self: center;
+    margin-top:70px;
+}
+
+.tstcontainer {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 50px;
+    padding-right: 50px;
+}
