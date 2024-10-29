@@ -1,0 +1,96 @@
+<%- include('../partails/header') -%>
+    <%- include('../partails/navbar') -%>
+
+
+
+        <div class="container-Slider">
+            <div class="item">
+                <div class="quote">
+                    <a class="Slider-link" href="#product">I am Groot.<span>Groot</span></a>
+                </div>
+            </div>
+            <div class="item">
+                <div class="quote">
+                    <a class="Slider-link" href="#product">You'r the head of security and your password is
+                        'password'&nbsp;?<span>Peter Parker</span></a>
+                </div>
+            </div>
+            <div class="item">
+                <div class="quote">
+                    <a class="Slider-link" href="#product">That really is America's ass.<span>Captain America</span></a>
+                </div>
+            </div>
+            <div class="item">
+                <div class="quote">
+                    <a class="Slider-link" href="#product">The hardest choices require the strongest
+                        wills.<span>Thanos</span></a>
+                </div>
+            </div>
+            <div class="item">
+                <div class="quote">
+                    <a class="Slider-link" href="#product">Buy Our New Laptop To Be life Faster<span>Tony
+                            Stark</span></a>
+                </div>
+            </div>
+            <div class="item">
+                <div class="quote">
+                    <a class="Slider-link" href="#product">We never lose our demons. We only learn to live above
+                        them.<span>Ancient One</span></a>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <br>
+
+
+
+
+
+        <% chunk.forEach((row)=> { %>
+            <div class="container py-5 ">
+                <div class="row">
+                    <% row.forEach((product)=> { %> <!-- Loop through each product in the row -->
+                        <div class="col-sm-6 col-md-4 d-flex" id="product">
+                            <section class="w-100" style="background-color: #eee;">
+                                <div class="card text-black d-flex flex-column h-100">
+                                    <img src="<%= product.imageProduct %>" class="card-img-top img-fluid"
+                                        alt="<%= product.titleProduct %>" />
+                                    <div class="card-body flex-grow-1 d-flex flex-column">
+                                        <div class="text-center">
+                                            <h5 class="card-title">
+                                                <%= product.titleProduct %>
+                                            </h5>
+                                            <p class="text-muted mb-4">
+                                                <%= product.descriptionProduct %>
+                                            </p>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>
+                                                <%= product.titleProduct %>
+                                            </span>
+                                            <span>
+                                                $<%= product.priceProduct %>
+                                            </span>
+                                        </div>
+                                        <!-- Add to Cart Button as Link -->
+                                        <div class="text-center mt-auto">
+                                            <a href="<%= '/product/' + product._id %>" class="btn btn-primary">
+                                                Add to Cart
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <% }) %> <!-- End inner loop for products in a row -->
+                </div>
+            </div>
+            <% }) %> <!-- End outer loop for rows -->
+
+
+
+
+                <%- include('../partails/footer') -%>
