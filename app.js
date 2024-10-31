@@ -31,17 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 // Use the products router for /product route
 app.use('/product', router);
 
-
-app.get('/login', (req, res) => {
-    res.render('layout/login');
-});
-
-app.get('/createProduct', (req, res) => {
-    res.render('layout/createProduct', {
-    });
-});
-
-
+// bring user routes
+const users = require('./routes/user-route');
+app.use('/users', users);
 
 // Start the server
 app.listen(3000, function () {
