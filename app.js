@@ -3,7 +3,18 @@ const bodyParser = require("body-parser");
 const router = require('./routes/route-products');
 const app = express();
 const db = require('./config/database');
+const session = require('express-session');
+const flash = require('connect-flash');
 
+
+// session and flach config
+app.use(session({
+    secret: 'lorem ipsum',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 * 15 }
+}));
+app.use(flash());
 // Set view engine to EJS
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');  // Fix path for views
@@ -27,7 +38,6 @@ app.get('/login', (req, res) => {
 
 app.get('/createProduct', (req, res) => {
     res.render('layout/createProduct', {
-        errors: false
     });
 });
 

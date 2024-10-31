@@ -15,13 +15,21 @@ router.get('/', async (req, res) => {
         for (let i = 0; i < products.length; i += chunkSize) {
             chunk.push(products.slice(i, i + chunkSize));
         }
-        res.render('layout/index', { chunk: chunk });
+        res.render('layout/index', {
+            chunk: chunk,
+            message: req.flash('info'),
+        });
+
     } catch (err) {
         console.log(err);
         res.status(500).send('Server error');
     }
 });
-
+router.get('/createProduct', (req, res) => {
+    res.render('layout/createProduct', {
+        errors: req.flash('errors')
+    });
+});
 
 router.post('/createProduct', [
     check('image').notEmpty().withMessage('Image is required'),
@@ -32,11 +40,9 @@ router.post('/createProduct', [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+        req.flash('errors', errors.array());
         // Pass errors and the original form data back to the template
-        return res.render('layout/createProduct', {
-            errors: errors.array(),  // Pass the errors to the template
-            formData: req.body       // Pass the form data back to pre-fill the form
-        });
+        return res.redirect('/product/createProduct');
     }
 
     let newProduct = new Product({
@@ -49,7 +55,9 @@ router.post('/createProduct', [
     try {
         await newProduct.save();
         console.log("Product was added");
+        req.flash('info', 'The Product Was Created successfuly');
         res.redirect('/product');  // Redirect after successful creation
+
     } catch (err) {
         console.log(err);
         res.status(500).send('Error saving product');  // Handle errors

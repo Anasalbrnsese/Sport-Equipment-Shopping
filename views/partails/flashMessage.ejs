@@ -1,0 +1,10 @@
+<% if (message && message !="" ) { %>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '<%= message %>',
+            showConfirmButton: false,
+            timer: 2000  // الرسالة ستختفي بعد ثانيتين
+        });
+    </script>
+    <% } %>
