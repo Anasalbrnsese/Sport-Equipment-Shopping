@@ -1,0 +1,22 @@
+<% if (locals.success && success !="" ) { %>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '<%= success %>',
+            showConfirmButton: false,
+            timer: 2000 // Message will disappear after 2 seconds
+        });
+    </script>
+    <% } %>
+
+
+        <% if (locals.error && error !="" ) { %>
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: '<%= error %>',
+                    showConfirmButton: false,
+                    timer: 2000 // Message will disappear after 2 seconds
+                });
+            </script>
+            <% } %>
