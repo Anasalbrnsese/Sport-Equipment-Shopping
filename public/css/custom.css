@@ -217,5 +217,5 @@ body {
     background-image: url('../favicon/favicon.ico');
     background-size: cover;
     display: inline-block;  
-    padding-left: 4px;
+    margin-right: 20px;
 }
