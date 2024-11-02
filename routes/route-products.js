@@ -77,19 +77,22 @@ router.post('/createProduct', upload.single('image'), [
 });
 
 
-
 // Route for fetching a single product by ID
 router.get('/:id', async (req, res) => {
+    if (req.params.id === 'favicon.ico') {
+        return res.status(204).end(); // تجاهل طلبات favicon.ico
+    }
+
     try {
-        const product = await Product.findOne({ _id: req.params.id });  // Use async/await
+        const product = await Product.findOne({ _id: req.params.id });
         if (product) {
-            res.render('layout/showProducts', { product: product });  // Make sure the path is correct
+            res.render('layout/showProducts', { product: product });
         } else {
             res.status(404).send('Product not found');
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send('Server error' + err);  // Handle errors
+        res.status(500).send('Server error: ' + err);
     }
 });
 
