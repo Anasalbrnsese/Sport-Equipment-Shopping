@@ -58,7 +58,7 @@ app.use('/users', users);
 //bring icon image with path ico
 app.use(favicon(path.join(__dirname, 'public','favicon', 'favicon.ico')));
 app.use((req, res, next) => {
-    if (req.url === '/favicon/favicon.ico') {
+    if (req.url === '/favicon/favicon.ico' || '/favicon/profile.jpg') {
         return res.status(204).end(); // إرسال استجابة بدون محتوى لطلبات الأيقونة
     }
     next();
