@@ -4,6 +4,17 @@ const Product = require('../models/products');  // Ensure correct capitalization
 const { check, validationResult } = require('express-validator');
 const { error } = require("jquery");
 
+
+
+// to check if user is loogged in 
+isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) return next()
+    res.redirect('/users/login')
+}
+
+
+
+
 // Route for fetching and displaying all products
 router.get('/', async (req, res) => {
     try {
@@ -18,7 +29,6 @@ router.get('/', async (req, res) => {
         res.render('layout/index', {
             chunk: chunk,
             message: req.flash('info'),
-            success: req.flash('success')
         });
 
     } catch (err) {
@@ -30,6 +40,7 @@ router.get('/', async (req, res) => {
 
 const multer = require('multer');
 const path = require('path');
+const { authenticate } = require("passport");
 
 // Set up multer storage
 const storage = multer.diskStorage({
@@ -43,9 +54,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get('/createProduct', (req, res) => {
+router.get('/createProduct', isAuthenticated, (req, res) => {
+
     res.render('layout/createProduct', {
-        errors: req.flash('errors')
+        errors: req.flash('errors'),
     });
 });
 router.post('/createProduct', upload.single('image'), [
@@ -86,7 +98,9 @@ router.get('/:id', async (req, res) => {
     try {
         const product = await Product.findOne({ _id: req.params.id });
         if (product) {
-            res.render('layout/showProducts', { product: product });
+            res.render('layout/showProducts', {
+                product: product,
+            });
         } else {
             res.status(404).send('Product not found');
         }

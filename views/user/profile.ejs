@@ -27,7 +27,8 @@
                         <div class="tab-content">
                             <div class="tab-pane fade active show" id="account-general">
                                 <div class="card-body media align-items-center">
-                                    <img src="../favicon/profile.jpg" alt class="d-block ui-w-80" style="border-radius:50px;">
+                                    <img src="../favicon/profile.jpg" alt class="d-block ui-w-80"
+                                        style="border-radius:50px;">
                                     <div class="media-body ml-4" style="padding-top:22px;">
                                         <label class="btn btn-outline-primary">
                                             Upload new photo
@@ -42,15 +43,17 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label class="form-label">Username</label>
-                                        <input type="text" class="form-control mb-1" value="nmaxwell">
+                                        <input type="text" class="form-control mb-1" value="<%= User ? User.name : '' %>">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Name</label>
-                                        <input type="text" class="form-control" value="Nelle Maxwell">
+                                        <input type="text" class="form-control" value="<%= User ? User.name : '' %>">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">E-mail</label>
-                                        <input type="text" class="form-control mb-1" value="nmaxwell@mail.com">
+                                        <input type="text" id="email" class="form-control"
+                                            value="<%= User ? User.email : '' %>" disabled>
+
                                         <div class="alert alert-warning mt-3">
                                             Your email is not confirmed. Please check your inbox.<br>
                                             <a href="javascript:void(0)">Resend confirmation</a>
