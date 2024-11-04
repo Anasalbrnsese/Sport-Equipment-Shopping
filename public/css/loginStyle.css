@@ -11,7 +11,7 @@ body{
     overflow: hidden;
     width: 768px;
     max-width: 100%;
-    min-height: 480px;
+    min-height: 538px;
 }
 
     .container-login p {
@@ -63,7 +63,7 @@ body{
 
     .container-login input {
         background-color: #eee;
-        border: none;
+        border: 0px solid #09c372;
         margin: 8px 0;
         padding: 10px 15px;
         font-size: 13px;
@@ -72,6 +72,9 @@ body{
         outline: none;
     }
 
+    .container-login input:focus {
+        border: 2px solid #09c372; 
+}
 .form-container-login {
     position: absolute;
     top: 0;

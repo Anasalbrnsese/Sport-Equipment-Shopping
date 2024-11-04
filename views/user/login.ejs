@@ -33,7 +33,7 @@
                     </form>
                 </div>
                 <div class="form-container-login sign-in">
-                    <form action="/users/login" method="post">
+                    <form action="/users/login" method="post" id="loginForm">
                         <h1>Sign In</h1>
                         <div class="social-icons">
                             <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -64,16 +64,3 @@
                 </div>
             </div>
             <%- include('../partails/footer') -%>
-
-                <script>
-                    const roleSelect = document.getElementById('roleSelect');
-                    const activationCodeContainer = document.getElementById('activationCodeContainer');
-
-                    roleSelect.addEventListener('change', function () {
-                        if (this.value === 'merchant') {
-                            activationCodeContainer.style.display = 'block'; // Show activation code field
-                        } else {
-                            activationCodeContainer.style.display = 'none'; // Hide activation code field
-                        }
-                    });
-                </script>

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Product = require('../models/products');  // Ensure correct capitalization
+const Product = require('../models/products');
 const { check, validationResult } = require('express-validator');
 const { error } = require("jquery");
 
@@ -13,7 +13,7 @@ isAuthenticated = (req, res, next) => {
 };
 
 isMerchant = (req, res, next) => {
-    if (req.user && req.user.role === 'merchant') {
+    if (req.user.role === 'merchant') {
         return next();
     }
     req.flash('error', 'ليس لديك الصلاحيات لإضافة منتجات.');

@@ -33,39 +33,50 @@ router.get('/signup', (req, res) => {
         error: req.flash('error'),
         success: req.flash('success'),
     });
+    
 });
 
 // تسجيل المستخدم
 router.post('/signup', async (req, res, next) => {
     const { name, email, password, confirm_password, role, activationCode } = req.body;
-
-    // تحقق من إدخال كود التفعيل عند اختيار "تاجر"
-    const activationCodeRequired = 'ADFA2DSNM!23D@$FDAJ3IAD'; // استبدل بكود التفعيل الخاص بك
+    // Check for activation code when selecting "merchant"
+    const activationCodeRequired = 'ADFA2DSNM!23D@$FDAJ3IAD'; // Replace with your activation code
     if (role === 'merchant') {
         if (!activationCode) {
-            req.flash('error', 'يجب إدخال كود التفعيل لتسجيل كـ تاجر.');
+            req.flash('error', 'You must enter an activation code to register as a merchant.');
             return res.redirect('/users/signup');
         } else if (activationCode !== activationCodeRequired) {
-            req.flash('error', 'ليس لديك الصلاحيات لإنشاء حساب تاجر. تحقق من كود التفعيل.');
+            req.flash('error', 'You do not have permission to create a merchant account. Please check the activation code.');
             return res.redirect('/users/signup');
         }
     } else {
-        // تحقق مما إذا كان المستخدم يحاول التسجيل كـ "مستخدم" مع إدخال كود التفعيل
+        // Check if the user is trying to register as a "User" with an activation code
         if (activationCode) {
-            req.flash('error', 'لا يمكن استخدام كود التفعيل عند التسجيل كـ مستخدم.');
+            req.flash('error', 'The activation code cannot be used when registering as a user.');
             return res.redirect('/users/signup');
         }
     }
+    if (!name || !email || !password || !confirm_password) {
+        req.flash('error', 'Missing credentials');
+    }
 
-    // استخدم Passport لتسجيل المستخدم
+    // Use Passport to register the user
     passport.authenticate('local.signup', {
-        failureRedirect: '/users/login',
+        failureRedirect: '/users/signup',
         failureFlash: true
-    })(req, res, next);
+    }, (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.redirect('/users/signup');
+        }
 
-    req.flash('success', 'Account created successfully! You can now sign in.');
-    res.redirect('/users/login');
+        req.flash('success', 'Account created successfully! You can now login.');
+        return res.redirect('/users/login');
+    })(req, res, next);
 });
+
 
 // الملف الشخصي
 router.get('/profile', isAuthenticated, async (req, res) => {
