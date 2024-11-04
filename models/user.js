@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
+
 const userSchema = mongoose.Schema({
     name: {
         type: String,
@@ -13,18 +14,23 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    role: {
+        type: String,
+        enum: ['merchant', 'user'],
+        default: 'user' // افتراضيًا سيكون المستخدم العادي
+    }
 });
 
+// دالة لتشفير كلمة المرور
 userSchema.methods.hashPassword = (password) => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 };
 
+// دالة لمقارنة كلمة المرور المُدخلة مع كلمة المرور المُشفرة
 userSchema.methods.comparePasswords = (password, hash) => {
     return bcrypt.compareSync(password, hash)
 };
 
-
 let User = mongoose.model('User', userSchema, 'users');
-
 
 module.exports = User;

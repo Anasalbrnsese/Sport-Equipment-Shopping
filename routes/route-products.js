@@ -10,8 +10,15 @@ const { error } = require("jquery");
 isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) return next()
     res.redirect('/users/login')
-}
+};
 
+isMerchant = (req, res, next) => {
+    if (req.user && req.user.role === 'merchant') {
+        return next();
+    }
+    req.flash('error', 'ليس لديك الصلاحيات لإضافة منتجات.');
+    res.redirect('/product'); // إعادة توجيه المستخدم إلى صفحة المنتجات
+};
 
 
 
@@ -54,8 +61,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get('/createProduct', isAuthenticated, (req, res) => {
-
+router.get('/createProduct', isAuthenticated, isMerchant, (req, res) => {
     res.render('layout/createProduct', {
         errors: req.flash('errors'),
     });

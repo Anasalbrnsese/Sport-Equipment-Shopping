@@ -27,7 +27,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('*', async (req, res, next) => {
-    console.log(req.user);
     res.locals.User = req.user || null;
     next();
 });
