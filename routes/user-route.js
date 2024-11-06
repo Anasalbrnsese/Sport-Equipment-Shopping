@@ -17,6 +17,13 @@ router.get('/login', (req, res) => {
     });
 });
 
+
+router.get('/set-password', (req, res) => {
+    res.render('user/set-password', {
+        error: req.flash('error'),
+        success: req.flash('success'),
+    });
+});
 // تسجيل الدخول
 router.post('/login',
     passport.authenticate('local.login', {
@@ -33,13 +40,12 @@ router.get('/signup', (req, res) => {
         error: req.flash('error'),
         success: req.flash('success'),
     });
-    
+
 });
 
 // تسجيل المستخدم
 router.post('/signup', async (req, res, next) => {
     const { name, email, password, confirm_password, role, activationCode } = req.body;
-    // Check for activation code when selecting "merchant"
     const activationCodeRequired = 'ADFA2DSNM!23D@$FDAJ3IAD'; // Replace with your activation code
     if (role === 'merchant') {
         if (!activationCode) {
@@ -50,7 +56,6 @@ router.post('/signup', async (req, res, next) => {
             return res.redirect('/users/signup');
         }
     } else {
-        // Check if the user is trying to register as a "User" with an activation code
         if (activationCode) {
             req.flash('error', 'The activation code cannot be used when registering as a user.');
             return res.redirect('/users/signup');
@@ -60,7 +65,6 @@ router.post('/signup', async (req, res, next) => {
         req.flash('error', 'Missing credentials');
     }
 
-    // Use Passport to register the user
     passport.authenticate('local.signup', {
         failureRedirect: '/users/signup',
         failureFlash: true
@@ -76,7 +80,6 @@ router.post('/signup', async (req, res, next) => {
         return res.redirect('/users/login');
     })(req, res, next);
 });
-
 
 // الملف الشخصي
 router.get('/profile', isAuthenticated, async (req, res) => {
@@ -98,5 +101,18 @@ router.get('/logout', (req, res) => {
         res.redirect('/users/login');
     });
 });
+
+
+// بدء المصادقة مع Google
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// التعامل مع إعادة التوجيه بعد المصادقة
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/users/login', failureFlash: true }),
+    (req, res) => {
+        req.flash('success', 'Login successfully with Google!');
+        res.redirect('/users/profile');
+    });
+
 
 module.exports = router;
