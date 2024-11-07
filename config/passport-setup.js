@@ -99,8 +99,10 @@ passport.use(new GoogleStrategy({
             googleId: profile.id,
             name: profile.displayName,
             email: profile.emails[0].value,
-            password: ''
         });
+
+        // تجاوز التحقق من كلمة المرور في حال كان تسجيل الدخول عبر Google
+        user.validateBeforeSave = false; // تعطيل التحقق قبل الحفظ إذا لم تكن هناك كلمة مرور
         await user.save();
         return done(null, user);
 
