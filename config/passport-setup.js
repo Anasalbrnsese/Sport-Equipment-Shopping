@@ -1,4 +1,3 @@
-require('dotenv').config();
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -58,13 +57,14 @@ passport.use('local.login', new localStrategy({
         const user = await User.findOne({ email: email });
 
         if (!user) {
-            return done(null, false, req.flash('error', 'User was not found'));
+            return done(null, false, req.flash('error', 'Email or Password is Wrong'));
         }
 
         if (user.comparePasswords(password, user.password)) {
             return done(null, user, req.flash('success', 'Welcome back'));
-        } else {
-            return done(null, false, req.flash('error', 'Password is wrong'));
+        }
+        else {
+            return done(null, false, req.flash('error', 'Email or Password is Wrong!'));
         }
     } catch (err) {
         return done(null, false, req.flash('error', 'Something wrong happened'));
@@ -99,6 +99,7 @@ passport.use(new GoogleStrategy({
             googleId: profile.id,
             name: profile.displayName,
             email: profile.emails[0].value,
+            password: ''
         });
         await user.save();
         return done(null, user);

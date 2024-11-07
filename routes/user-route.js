@@ -17,22 +17,25 @@ router.get('/login', (req, res) => {
     });
 });
 
-
-router.get('/set-password', (req, res) => {
-    res.render('user/set-password', {
-        error: req.flash('error'),
-        success: req.flash('success'),
-    });
-});
 // تسجيل الدخول
-router.post('/login',
-    passport.authenticate('local.login', {
-        successRedirect: '/users/profile',
-        failureRedirect: '/users/login',
-        failureFlash: true
-    }), (req, res) => {
-        req.flash('success', 'Login successfully!');
-    });
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local.login', (err, user, info) => {
+        if (err) return next(err); // إذا حدث خطأ في المصادقة
+
+        if (!user) {
+            req.flash('error','Invalid login credentials');  
+            return res.redirect('/users/login');
+        }
+
+        // إذا كانت المصادقة ناجحة
+        req.logIn(user, (err) => {
+            if (err) return next(err);
+            req.flash('success', 'Login successfully!');  
+            return res.redirect('/users/profile');
+        });
+    })(req, res, next);
+});
+
 
 // عرض نموذج التسجيل
 router.get('/signup', (req, res) => {
@@ -46,7 +49,14 @@ router.get('/signup', (req, res) => {
 // تسجيل المستخدم
 router.post('/signup', async (req, res, next) => {
     const { name, email, password, confirm_password, role, activationCode } = req.body;
-    const activationCodeRequired = 'ADFA2DSNM!23D@$FDAJ3IAD'; // Replace with your activation code
+    const activationCodeRequired = process.env.ACTIVATION_CODE_MERCHANT; // Replace with your activation code
+
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    if (!passwordPattern.test(password)) {
+        req.flash('error', 'Password must be at least 8 characters long, contain a lowercase letter, an uppercase letter, a number, and a special character.');
+        return res.redirect('/users/signup');
+    }
+
     if (role === 'merchant') {
         if (!activationCode) {
             req.flash('error', 'You must enter an activation code to register as a merchant.');
@@ -64,6 +74,7 @@ router.post('/signup', async (req, res, next) => {
     if (!name || !email || !password || !confirm_password) {
         req.flash('error', 'Missing credentials');
     }
+
 
     passport.authenticate('local.signup', {
         failureRedirect: '/users/signup',
@@ -87,7 +98,11 @@ router.get('/profile', isAuthenticated, async (req, res) => {
         const userId = req.user ? req.user.id : null;
         const user = await User.findById(userId);
 
-        res.render('user/profile', { User: user });
+        res.render('user/profile', {
+            User: user,
+            success: req.flash('success'),
+            error: req.flash('error')
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send("خطأ في الخادم");
@@ -110,7 +125,7 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 router.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/users/login', failureFlash: true }),
     (req, res) => {
-        req.flash('success', 'Login successfully with Google!');
+        req.flash('success', 'Successfully logged in via Google. Welcome to our platform!');
         res.redirect('/users/profile');
     });
 

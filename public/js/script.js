@@ -38,3 +38,61 @@ inputs.forEach((input, index) => {
         }
     });
 });
+
+
+document.getElementById('password').addEventListener('input', function () {
+    let password = this.value;
+
+    // تحقق من الحروف الكبيرة والصغيرة والأرقام والرموز
+    let div = /[a-z]/.test(password) || /[A-Z]/.test(password) || /\d/.test(password) || /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    let hasLowercase = /[a-z]/.test(password);
+    let hasUppercase = /[A-Z]/.test(password);
+    let hasNumber = /\d/.test(password);
+    let hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // أظهر الرسائل بناءً على الشروط
+    document.getElementById('password-feedback').classList.toggle('valid', div);
+    document.getElementById('lowercase-msg').classList.toggle('valid', hasLowercase);
+    document.getElementById('uppercase-msg').classList.toggle('valid', hasUppercase);
+    document.getElementById('number-msg').classList.toggle('valid', hasNumber);
+    document.getElementById('special-char-msg').classList.toggle('valid', hasSpecialChar);
+});
+
+
+
+document.getElementById('confirm_password').addEventListener('input', function () {
+    const password = this.value;
+
+    // تحقق من الحروف الكبيرة والصغيرة والأرقام والرموز
+    let div = /[a-z]/.test(password) || /[A-Z]/.test(password) || /\d/.test(password) || /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    let hasLowercase = /[a-z]/.test(password);
+    let hasUppercase = /[A-Z]/.test(password);
+    let hasNumber = /\d/.test(password);
+    let hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // أظهر الرسائل بناءً على الشروط
+    document.getElementById('password-feedback-2').classList.toggle('valid', div);
+    document.getElementById('lowercase-msg-2').classList.toggle('valid', hasLowercase);
+    document.getElementById('uppercase-msg-2').classList.toggle('valid', hasUppercase);
+    document.getElementById('number-msg-2').classList.toggle('valid', hasNumber);
+    document.getElementById('special-char-msg-2').classList.toggle('valid', hasSpecialChar);
+});
+
+
+document.getElementById('passwordLogin').addEventListener('input', function () {
+    let password = this.value;
+
+    // تحقق من الحروف الكبيرة والصغيرة والأرقام والرموز
+    let div = /[a-z]/.test(password) || /[A-Z]/.test(password) || /\d/.test(password) || /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    let hasLowercase = /[a-z]/.test(password);
+    let hasUppercase = /[A-Z]/.test(password);
+    let hasNumber = /\d/.test(password);
+    let hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    // أظهر الرسائل بناءً على الشروط
+    document.getElementById('password-feedback-3').classList.toggle('valid', div);
+    document.getElementById('lowercase-msg-3').classList.toggle('valid', hasLowercase);
+    document.getElementById('uppercase-msg-3').classList.toggle('valid', hasUppercase);
+    document.getElementById('number-msg-3').classList.toggle('valid', hasNumber);
+    document.getElementById('special-char-msg-3').classList.toggle('valid', hasSpecialChar);
+});

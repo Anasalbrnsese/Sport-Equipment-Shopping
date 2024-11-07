@@ -11,7 +11,7 @@ body{
     overflow: hidden;
     width: 768px;
     max-width: 100%;
-    min-height: 538px;
+    min-height: 628px;
 }
 
     .container-login p {
@@ -122,14 +122,29 @@ body{
 }
 
 .social-icons a{
-    border: 1px solid #ccc;
+    border: 2px solid black;
     border-radius: 20%;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     margin: 0 3px;
-    width: 40px;
+    width: 150px;
     height: 40px;
+    letter-spacing: 10px;
+    color: red;
+}
+.social-icons .iconSignup::after{
+    content: "Sign-up With Email";
+    letter-spacing: 0px;
+    color: #070606;
+    font-weight: bold;
+}
+
+.social-icons .iconSignin::after{
+    content: "Sign-in With Email";
+    letter-spacing: 0px;
+    color: #070606;
+    font-weight: bold;
 }
 
 .toggle-container-login {
@@ -196,4 +211,102 @@ body{
 
 .container-login.active .toggle-right {
     transform: translateX(200%);
+}
+
+
+form #password-feedback p {
+    color: red;
+    display: inline-block;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: -51px 0;
+
+}
+form #password-feedback{
+    display: none;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    font-weight: bolder;
+}
+form #password-feedback.valid{
+    display: block;
+    color: green;
+}
+
+form #password-feedback p.valid {
+    color: green;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: -51px 0;
+}
+
+form #password-feedback-2 p {
+    color: red;
+    display: inline-block;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: -51px 0;
+
+}
+
+form #password-feedback-2{
+    display: none;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    font-weight: bolder;
+}
+form #password-feedback-2.valid{
+    display: block;
+    color: green;
+}
+
+form #password-feedback-2 p.valid {
+    color: green;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: -51px 0;
+}
+
+
+
+
+
+
+form #password-feedback-3 p {
+    color: red;
+    display: inline-block;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: -51px 0;
+
+}
+form #password-feedback-3{
+    display: none;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    font-weight: bolder;
+    
+}
+form #password-feedback-3.valid{
+    display: block;
+    color: green;
+}
+
+form #password-feedback-3 p.valid {
+    color: green;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: -51px 0;   
 }

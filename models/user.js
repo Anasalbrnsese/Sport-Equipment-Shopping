@@ -13,8 +13,9 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: false,
+        required: true,
     },
+    googleId: { type: String },
     role: {
         type: String,
         enum: ['merchant', 'user'],
