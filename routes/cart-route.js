@@ -6,7 +6,7 @@ const { error } = require("jquery");
 
 let isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) return next();
-    req.flash('error', 'Must login to add cart');
+    req.flash('error', 'You must have an account to create your shopping cart!');
     res.redirect('/users/login');
 };
 router.post('/add_cart', isAuthenticated, (req, res) => {
