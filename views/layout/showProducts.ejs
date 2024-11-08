@@ -1,38 +1,71 @@
 <%- include('../partails/header') -%>
     <%- include('../partails/navbar') -%>
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-sm-6 col-md-4 d-flex">
-                    <section class="w-100" style="background-color: #eee;">
-                        <div class="card text-black d-flex flex-column h-100">
-                            <img src="<%= product.imageProduct %>" class="card-img-top img-fluid"
-                                alt="<%= product.titleProduct %>" />
-                            <div class="card-body flex-grow-1 d-flex flex-column">
-                                <div class="text-center">
-                                    <h5 class="card-title">
-                                        <%= product.titleProduct %>
-                                    </h5>
-                                    <p class="text-muted mb-4">
-                                        <%= product.descriptionProduct %>
-                                    </p>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>
-                                        <%= product.titleProduct %>
-                                    </span>
-                                    <span>
-                                        Price test:
-                                        $<%= product.priceProduct %>
-                                    </span>
-                                </div>
-                                <!-- Add to Cart Button as Link -->
-                                <div class="text-center mt-auto">
-                                </div>
+        <div class="container my-5">
+            <div class="card product-card border-0 shadow-lg overflow-hidden rounded-5">
+                <div class="row g-0">
+                    <!-- قسم الصورة -->
+                    <div class="col-md-6">
+                        <div class="product-image-container position-relative">
+                            <img src="<%= product.imageProduct %>" class="img-fluid h-100 object-cover rounded-start"
+                                alt="<%= product.titleProduct %>">
+                            <div class="badge bg-gradient position-absolute top-0 end-0 m-3 p-2 px-3 fs-6">In Stock
                             </div>
                         </div>
-                    </section>
+                    </div>
+
+                    <!-- قسم التفاصيل -->
+                    <div class="col-md-6">
+                        <div class="card-body p-5 d-flex flex-column">
+                            <!-- العنوان والسعر -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h2 class="card-title fw-bold text-dark">
+                                    <%= product.titleProduct %>
+                                </h2>
+                                <span class="h4 text-gradient">$<%= product.priceProduct %></span>
+                            </div>
+
+                            <!-- الوصف -->
+                            <p class="text-muted fs-5 mb-4">
+                                <%= product.descriptionProduct %>
+                            </p>
+
+                            <!-- التقييمات -->
+                            <div class="mb-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                    <span class="text-muted ms-2">(23 Reviews)</span>
+                                </div>
+                            </div>
+
+                            <!-- الكمية وخيارات الأزرار -->
+                            <div class="d-flex align-items-center mb-4">
+                                <label for="quantity" class="form-label me-3">Quantity:</label>
+                                <input type="number" id="quantity" name="quantity" min="1" value="1"
+                                    class="form-control w-25">
+                            </div>
+
+                            <!-- الأزرار -->
+                            <div class="mt-auto d-flex gap-3">
+                                <form action="/cart/add_cart" method="POST">
+                                    <input type="hidden" name="product_id" value="<%= product.productId %>">
+                                    <input type="hidden" name="product_name" value="<%= product.titleProduct %>">
+                                    <input type="hidden" name="product_price" value="<%= product.priceProduct %>">
+                                    <input type="hidden" name="imageProduct" value="<%= product.imageProduct %>" />
+                                    <button class="btn btn-gradient btn-lg flex-grow-1 shadow">Add to Cart</button>
+                                </form>
+                                <button class="btn btn-outline-gradient btn-lg flex-grow-1 shadow">Buy Now</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+
+
 
         <%- include('../partails/footer') -%>

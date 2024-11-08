@@ -1,0 +1,96 @@
+/* إعدادات عامة */
+.product-card {
+    background-color: #ffffff;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+/* تدرج للأزرار */
+.btn-gradient {
+    background-image: linear-gradient(45deg, #ff6a00, #ee0979);
+    color: #ffffff;
+    border: none;
+}
+
+.btn-outline-gradient {
+    background-color: transparent;
+    border: 2px solid transparent;
+    color: #ff6a00;
+    background-image: linear-gradient(45deg, #ff6a00, #ee0979);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.btn-outline-gradient:hover {
+    color: #ff6a00;
+    background-image: linear-gradient(45deg, #ff6a00, #ee0979);
+    border: 2px solid #ff6a00;
+}
+
+/* تأثير التدرج للنص */
+.text-gradient {
+    background-image: linear-gradient(45deg, #ff6a00, #ee0979);
+    background-clip: text;
+    color: transparent;
+}
+
+/* تحسينات الصورة */
+.product-image-container {
+    height: 100%;
+    position: relative;
+}
+
+.product-image-container img {
+    -o-transition: transform 0.4s ease-in-out;
+    -webkit-transition: transform 0.4s ease-in-out;
+    -moz-transition: transform 0.4s ease-in-out;
+    -ms-transition: transform 0.4s ease-in-out;
+    transition: transform 0.4s ease-in-out;
+}
+
+.product-image-container:hover img {
+    transform: scale(1.1);
+}
+
+/* تصميم الشارة */
+.badge.bg-gradient {
+    background-image: linear-gradient(45deg, #28a745, #28d17c);
+    color: #fff;
+    font-weight: bolder;
+    border-radius: 12px;
+    background-color: #07cd0a;
+}
+
+.shadow-lg {
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.fas.fa-star,
+.fas.fa-star-half-alt {
+    font-size: 1.2rem;
+    color: #ffc107;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* إعدادات عامة */
+.product-card {
+    background-color: #ffffff;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+/* تدرج للأزرار */
+.btn-gradient {
+    background-image: linear-gradient(45deg, #ff6a00, #ee0979);
+    color: #ffffff;
+    border: none;
+}
+
+.btn-outline-gradient {
+    background-color: transparent;
+    border: 2px solid transparent;
+    color: #ff6a00
+}

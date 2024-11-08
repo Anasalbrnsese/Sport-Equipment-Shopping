@@ -11,30 +11,45 @@ const isAuthenticated = (req, res, next) => {
 
 // عرض تسجيل الدخول
 router.get('/login', (req, res) => {
+    const cartCount = req.session.cart ? req.session.cart.length : 0;
     res.render('user/login', {
         error: req.flash('error'),
         success: req.flash('success'),
+        cartCount: cartCount, // تمرير المتغير إلى الـ profile.ejs
+        User: req.user // تمرير بيانات المستخدم إذا كانت موجودة
     });
 });
 
 // تسجيل الدخول
 router.post('/login', (req, res, next) => {
-    passport.authenticate('local.login', (err, user, info) => {
+    passport.authenticate('local.login', async (err, user, info) => {
         if (err) return next(err); // إذا حدث خطأ في المصادقة
 
         if (!user) {
-            req.flash('error','Invalid login credentials');  
+            req.flash('error', 'Invalid login credentials');
             return res.redirect('/users/login');
         }
 
         // إذا كانت المصادقة ناجحة
-        req.logIn(user, (err) => {
+        req.logIn(user, async (err) => {
             if (err) return next(err);
-            req.flash('success', 'Login successfully!');  
-            return res.redirect('/users/profile');
+
+            // استرجاع السلة من قاعدة البيانات وتخزينها في الجلسة
+            try {
+                const userFromDb = await User.findById(user._id); // استرجاع المستخدم من قاعدة البيانات
+                req.session.cart = userFromDb.cart || []; // حفظ السلة في الجلسة إذا كانت موجودة
+
+                req.flash('success', 'Login successfully!');
+                return res.redirect('/users/profile');
+            } catch (err) {
+                console.log(err);
+                req.flash('error', 'Error retrieving cart');
+                return res.redirect('/users/login');
+            }
         });
     })(req, res, next);
 });
+
 
 
 // عرض نموذج التسجيل
@@ -95,13 +110,16 @@ router.post('/signup', async (req, res, next) => {
 // الملف الشخصي
 router.get('/profile', isAuthenticated, async (req, res) => {
     try {
+        const cartCount = req.session.cart ? req.session.cart.length : 0;
         const userId = req.user ? req.user.id : null;
         const user = await User.findById(userId);
 
         res.render('user/profile', {
             User: user,
             success: req.flash('success'),
-            error: req.flash('error')
+            error: req.flash('error'),
+            cartCount: cartCount, // تمرير المتغير إلى الـ profile.ejs
+            User: req.user // تمرير بيانات المستخدم إذا كانت موجودة
         });
     } catch (err) {
         console.error(err);
@@ -110,7 +128,28 @@ router.get('/profile', isAuthenticated, async (req, res) => {
 });
 
 // تسجيل الخروج
-router.get('/logout', (req, res) => {
+router.get('/logout', async (req, res) => {
+    if (req.session.cart && req.user) {
+        try {
+            const userFromDb = await User.findById(req.user._id);
+
+            // إذا كانت السلة تحتوي على منتجات، نقوم بتخزينها في قاعدة البيانات
+            if (req.session.cart.length > 0) {
+                console.log('Saving cart:', req.session.cart);
+                userFromDb.cart = req.session.cart;
+                await userFromDb.save();
+            }
+
+            // مسح السلة من الجلسة
+            req.session.cart = [];
+
+        } catch (err) {
+            console.log('Error saving cart during logout:', err);
+            req.flash('error', 'Error saving your cart.');
+        }
+    }
+
+    // تسجيل الخروج
     req.logout(() => {
         req.flash('success', 'You have logged out successfully.');
         res.redirect('/users/login');
@@ -124,9 +163,22 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 // التعامل مع إعادة التوجيه بعد المصادقة
 router.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/users/login', failureFlash: true }),
-    (req, res) => {
-        req.flash('success', 'Successfully logged in via Google. Welcome to our platform!');
-        res.redirect('/users/profile');
+    async (req, res) => {
+        try {
+            // استرجاع بيانات المستخدم من قاعدة البيانات
+            const userFromDb = await User.findById(req.user._id); // استرجاع المستخدم من قاعدة البيانات
+
+            // استرجاع السلة من قاعدة البيانات وتخزينها في الجلسة
+            req.session.cart = userFromDb.cart || []; // حفظ السلة في الجلسة
+
+            // عرض رسالة النجاح
+            req.flash('success', 'Successfully logged in via Google. Welcome to our platform!');
+            res.redirect('/users/profile');
+        } catch (err) {
+            console.log(err);
+            req.flash('error', 'Error retrieving cart from database');
+            res.redirect('/users/login');
+        }
     });
 
 

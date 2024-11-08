@@ -21,6 +21,13 @@ const userSchema = mongoose.Schema({
         enum: ['merchant', 'user'],
         default: 'user' // افتراضيًا سيكون المستخدم العادي
     },
+    cart: [{
+        product_id: String,
+        quantity: Number,
+        product_name: String,
+        product_price: Number,
+        imageProduct: String
+    }]
 });
 
 // دالة لتشفير كلمة المرور

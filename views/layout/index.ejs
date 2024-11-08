@@ -50,43 +50,60 @@
                 <% chunk.forEach((row)=> { %>
                     <div class="container py-5 ">
 
-                        <div class="row">
+                        <div class="row g-4">
 
-                            <% row.forEach((product)=> { %> <!-- Loop through each product in the row -->
+                            <% row.forEach((product)=> { %>
                                 <div class="col-sm-6 col-md-4 d-flex" id="product">
-                                    <section class="w-100" style="background-color: #eee;">
-                                        <div class="card text-black d-flex flex-column h-100">
-                                            <img src="<%= product.imageProduct %>" class="card-img-top img-fluid"
-                                                alt="<%= product.titleProduct %>" />
-                                            <div class="card-body flex-grow-1 d-flex flex-column">
-                                                <div class="text-center">
-                                                    <h5 class="card-title">
-                                                        <%= product.titleProduct %>
-                                                    </h5>
-                                                    <p class="text-muted mb-4">
-                                                        <%= product.descriptionProduct %>
-                                                    </p>
-                                                </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <span>
-                                                        <%= product.titleProduct %>
-                                                    </span>
-                                                    <span>
-                                                        $<%= product.priceProduct %>
-                                                    </span>
-                                                </div>
-                                                <!-- Add to Cart Button as Link -->
-                                                <div class="text-center mt-auto">
-                                                    <a href="<%= '/product/' + product._id %>" class="btn btn-primary">
-                                                        Add to Cart
-                                                    </a>
+                                    <a href="<%= '/product/' + product._id %>"
+                                        class="w-100 text-decoration-none text-black d-flex flex-column h-100">
+                                        <!-- Link around card -->
+                                        <section class="w-100 h-100 d-flex flex-column" style="background-color: #eee;">
+                                            <div class="card text-black d-flex flex-column h-100">
+                                                <img src="<%= product.imageProduct %>" class="card-img-top img-fluid"
+                                                    alt="<%= product.titleProduct %>" />
+                                                <div class="card-body flex-grow-1 d-flex flex-column">
+                                                    <div class="text-center">
+                                                        <h5 class="card-title">
+                                                            <%= product.titleProduct %>
+                                                        </h5>
+                                                        <p class="text-muted mb-4">
+                                                            <%= product.descriptionProduct %>
+                                                        </p>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>
+                                                            <%= product.titleProduct %>
+                                                        </span>
+                                                        <span>$<%= product.priceProduct %></span>
+                                                    </div>
+                                                    <!-- Add to Cart Button -->
+                                                    <div class="text-center mt-auto">
+                                                        <!-- تعديل زر Add to Cart -->
+                                                        <div class="text-center mt-auto">
+                                                        <form action="/cart/add_cart" method="POST">
+                                                            <input type="hidden" name="product_id" value="<%= product.productId %>">
+                                                            <input type="hidden" name="product_name" value="<%= product.titleProduct %>">
+                                                            <input type="hidden" name="product_price" value="<%= product.priceProduct %>">
+                                                            <input type="hidden" name="imageProduct" value="<%= product.imageProduct %>" />
+                                                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                                                        </form>
+
+                                                        </div>
+
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </section>
+                                        </section>
+                                    </a>
                                 </div>
-                                <% }) %> <!-- End inner loop for products in a row -->
+                                <% }) %>
+
                         </div>
                     </div>
                     <% }) %> <!-- End outer loop for rows -->
+                    
+
+
+
+                    
                         <%- include('../partails/footer') -%>

@@ -48,6 +48,7 @@ router.get('/', async (req, res) => {
 const multer = require('multer');
 const path = require('path');
 const { authenticate } = require("passport");
+const product = require("../models/products");
 
 // Set up multer storage
 const storage = multer.diskStorage({
@@ -103,9 +104,11 @@ router.get('/:id', async (req, res) => {
 
     try {
         const product = await Product.findOne({ _id: req.params.id });
+        const cart = req.session.cart || [];
         if (product) {
             res.render('layout/showProducts', {
                 product: product,
+                cart: cart,
             });
         } else {
             res.status(404).send('Product not found');
