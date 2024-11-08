@@ -9,10 +9,8 @@ let isAuthenticated = (req, res, next) => {
     req.flash('error', 'Must login to add cart');
     res.redirect('/users/login');
 };
-
-
 router.post('/add_cart', isAuthenticated, (req, res) => {
-    const { product_id, imageProduct, product_name, product_price } = req.body;
+    const { product_id, imageProduct, product_name, product_price, quantity } = req.body;
 
     if (!req.session.cart) {
         req.session.cart = [];
@@ -23,7 +21,7 @@ router.post('/add_cart', isAuthenticated, (req, res) => {
     // تحديث الكمية إذا كان المنتج موجودًا في السلة
     req.session.cart.forEach(item => {
         if (item.product_id === product_id) {
-            item.quantity += 1;
+            item.quantity = parseInt(quantity);  // تعيين الكمية الجديدة
             productExists = true;
         }
     });
@@ -35,13 +33,17 @@ router.post('/add_cart', isAuthenticated, (req, res) => {
             product_name,
             product_price: parseFloat(product_price),
             imageProduct,
-            quantity: 1
+            quantity: parseInt(quantity)
         });
-    }  
-    res.redirect('/product')
+    }
+
+    res.redirect('/cart');
 });
 
-router.get('/remove_item', (req, res) => {
+
+
+
+router.get('/remove_item', isAuthenticated, (req, res) => {
     const product_id = req.query.id;
 
     req.session.cart = req.session.cart.filter(item => item.product_id !== product_id);
@@ -55,7 +57,7 @@ router.get('/', (req, res) => {
 });
 
 // product routes
-router.get('/remove_item', (req, res) => {
+router.get('/remove_item', isAuthenticated, (req, res) => {
     const product_id = req.query.id;
 
     req.session.cart = req.session.cart.filter(item => item.product_id !== product_id);
@@ -64,7 +66,7 @@ router.get('/remove_item', (req, res) => {
 });
 
 
-router.get('/increase', (req, res) => {
+router.get('/increase', isAuthenticated, (req, res) => {
     const productId = req.query.id;
     const cart = req.session.cart || [];
 
@@ -76,7 +78,7 @@ router.get('/increase', (req, res) => {
 });
 
 
-router.get('/decrease', (req, res) => {
+router.get('/decrease', isAuthenticated, (req, res) => {
     const productId = req.query.id;
     const cart = req.session.cart || [];
 
