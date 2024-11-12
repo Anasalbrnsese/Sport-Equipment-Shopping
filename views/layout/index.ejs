@@ -46,63 +46,81 @@
                 <br>
 
 
+<!-- Category Filter Section -->
+<div class="container py-5">
+    <form method="GET" action="/">
+        <!-- Use a row to center the filter -->
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="input-group shadow-lg p-2 rounded-5">
+                    <!-- Custom background and smooth dropdown -->
+                    <select name="category" class="form-select form-select-lg" onchange="this.form.submit()"
+                        style="border-radius: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s;">
+                        <option value="" class="text-muted">Select Category</option>
+                        <option value="" class="text-muted">All Product</option>
+                        <% categories.forEach(function(category) { %>
+                            <option value="<%= category._id %>" <%=category._id==categoryId ? 'selected' : '' %>>
+                                <%= category.title %>
+                            </option>
+                            <% }); %>
+                    </select>
 
-                <% chunk.forEach((row)=> { %>
-                    <div class="container py-5 ">
-
-                        <div class="row g-4">
-
-                            <% row.forEach((product)=> { %>
-                                <div class="col-sm-6 col-md-4 d-flex" id="product">
-                                    <a href="<%= '/product/' + product._id %>"
-                                        class="w-100 text-decoration-none text-black d-flex flex-column h-100">
-                                        <!-- Link around card -->
-                                        <section class="w-100 h-100 d-flex flex-column" style="background-color: #eee;">
-                                            <div class="card text-black d-flex flex-column h-100">
-                                                <img src="<%= product.imageProduct %>" class="card-img-top img-fluid"
-                                                    alt="<%= product.titleProduct %>" />
-                                                <div class="card-body flex-grow-1 d-flex flex-column">
-                                                    <div class="text-center">
-                                                        <h5 class="card-title">
-                                                            <%= product.titleProduct %>
-                                                        </h5>
-                                                        <p class="text-muted mb-4">
-                                                            <%= product.descriptionProduct %>
-                                                        </p>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between">
-                                                        <span>
-                                                            <%= product.titleProduct %>
-                                                        </span>
-                                                        <span>$<%= product.priceProduct %></span>
-                                                    </div>
-                                                    <!-- Add to Cart Button -->
-                                                    <div class="text-center mt-auto">
-                                                        <!-- تعديل زر Add to Cart -->
-                                                        <div class="text-center mt-auto">
-
-                                                            <button
-                                                                onclick="window.location.href='<%= '/product/' + product._id %>'"
-                                                                type="submit" class="btn btn-primary">Add to
-                                                                Cart</button>
+                    <!-- Stylish Filter Button with icon -->
+                    <button class="btn btn-primary ms-3" type="submit"
+                        style="border-radius: 25px; background: linear-gradient(135deg, #6f42c1, #007bff); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: 0.3s;">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </a>
+<!-- Product Display Section -->
+<% chunk.forEach(function(row) { %>  
+    <div class="container py-5 ">
+        <div class="row g-4">
+            <% row.forEach(function(product) { %>
+                <div class="col-sm-6 col-md-4 d-flex" id="product">
+                    <a href="<%= '/product/' + product._id %>"
+                        class="w-100 text-decoration-none text-black d-flex flex-column h-100">
+                        <section class="w-100 h-100 d-flex flex-column" style="background-color: #eee;">
+                            <div class="card text-black d-flex flex-column h-100">
+                                <img src="<%= product.imageProduct %>" class="card-img-top img-fluid"
+                                    alt="<%= product.titleProduct %>" />
+                                <div class="card-body flex-grow-1 d-flex flex-column">
+                                    <div class="text-center">
+                                        <h5 class="card-title">
+                                            <%= product.titleProduct %>
+                                        </h5>
+                                        <p class="text-muted mb-4">
+                                            <%= product.descriptionProduct %>
+                                        </p>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>
+                                            <%= product.titleProduct %>
+                                        </span>
+                                        <span>$<%= product.priceProduct %></span>
+                                    </div>
+                                    <!-- Add to Cart Button -->
+                                    <div class="text-center mt-auto">
+                                        <div class="text-center mt-auto">
+                                            <button onclick="window.location.href='<%= '/product/' + product._id %>'"
+                                                type="submit" class="btn btn-primary">Add to Cart</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <% }) %>
+                            </div>
+                        </section>
+                    </a>
+                </div>
+                <% }); %>  
 
-                        </div>
-                    </div>
-                    <% }) %> <!-- End outer loop for rows -->
-
-
-
+        </div>
+    </div>
+    <% }); %>
 
 
                         <%- include('../partails/footer') -%>

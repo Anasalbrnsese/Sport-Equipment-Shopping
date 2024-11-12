@@ -3,7 +3,7 @@ const router = express.Router();
 const Product = require('../models/products');
 const { check, validationResult } = require('express-validator');
 const { error } = require("jquery");
-
+const Category = require('../models/category');
 
 
 // to check if user is loogged in 
@@ -20,29 +20,34 @@ isMerchant = (req, res, next) => {
     res.redirect('/product'); // إعادة توجيه المستخدم إلى صفحة المنتجات
 };
 
-
-
-// Route for fetching and displaying all products
 router.get('/', async (req, res) => {
     try {
-        const products = await Product.find({});  // Fetch products from the database
+        const categoryId = req.query.category;  // Get category from the query string
+        const filter = categoryId ? { category: categoryId } : {};  // If category is selected, filter by it
+
+        const products = await Product.find(filter).populate('category');
         let chunk = [];
         let chunkSize = 3;  // Adjust chunk size if needed
 
-        // Loop through products and create chunks
+        // Create chunks of products
         for (let i = 0; i < products.length; i += chunkSize) {
-            chunk.push(products.slice(i, i + chunkSize));
+            chunk.push(products.slice(i, i + chunkSize));  // Create chunks of 3 products each
         }
+        // Fetch all categories for the category filter dropdown
+        const categories = await Category.find();
+
         res.render('layout/index', {
             chunk: chunk,
+            categories: categories,
+            categoryId: categoryId,  // To keep track of selected category
             message: req.flash('info'),
         });
-
     } catch (err) {
         console.log(err);
-        res.status(500).send('Server error');
+        res.status(500).send('Error fetching products');
     }
 });
+
 
 
 const multer = require('multer');
@@ -62,10 +67,17 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get('/createProduct', isAuthenticated, isMerchant, (req, res) => {
-    res.render('layout/createProduct', {
-        errors: req.flash('errors'),
-    });
+router.get('/createProduct', isAuthenticated, isMerchant, async (req, res) => {
+    try {
+        const categories = await Category.find(); // Fetch all categories from the database
+        res.render('layout/createProduct', {
+            categories: categories, // Pass categories to the template
+            errors: req.flash('errors'),
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error fetching categories');
+    }
 });
 router.post('/createProduct', upload.single('image'), [
     check('title').notEmpty().withMessage('Title is required'),
@@ -83,6 +95,7 @@ router.post('/createProduct', upload.single('image'), [
         titleProduct: req.body.title,
         priceProduct: req.body.price,
         descriptionProduct: req.body.description,
+        category: req.body.category,
     });
 
     try {

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require("body-parser");
 const routeProduct = require('./routes/route-products');
+const adminCategories = require('./routes/admin_category_route');
 const cart = require('./routes/cart-route');
 const app = express();
 const db = require('./config/database');
@@ -67,6 +68,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/product', routeProduct);
 app.use('/cart', cart);
 app.use('/', routeProduct);
+app.use('/admin/categories', adminCategories);
 
 
 
