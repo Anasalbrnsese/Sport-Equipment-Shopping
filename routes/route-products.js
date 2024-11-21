@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
 const multer = require('multer');
 const path = require('path');
 const { authenticate } = require("passport");
-const product = require("../models/products");
+
 
 // Set up multer storage
 const storage = multer.diskStorage({

@@ -2,6 +2,21 @@ const express = require("express");
 const router = express.Router();
 const User = require('../models/user');
 const passport = require('passport');
+const multer = require("multer");
+
+
+//configure multer
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/images')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + '.png')
+    }
+});
+
+var upload = multer({ storage: storage });
+
 
 // للتحقق مما إذا كان المستخدم مسجلاً
 const isAuthenticated = (req, res, next) => {
@@ -126,6 +141,31 @@ router.get('/profile', isAuthenticated, async (req, res) => {
         res.status(500).send("خطأ في الخادم");
     }
 });
+
+
+
+
+//upload user avater
+router.post('/uploadAvatar', upload.single('avatar'), async (req, res) => {
+    try {
+        let newFields = {
+            avatar: req.file.filename,
+        };
+
+        await User.updateOne({ _id: req.user._id }, newFields);
+
+        req.flash('success', 'Avatar uploaded successfully!');
+        res.redirect('/users/profile');
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Error uploading avatar.');
+        res.redirect('/users/profile');
+    }
+});
+
+
+
+
 
 // تسجيل الخروج
 router.get('/logout', async (req, res) => {

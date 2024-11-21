@@ -39,6 +39,7 @@ passport.use('local.signup', new localStrategy({
         newUser.email = req.body.email;
         newUser.password = newUser.hashPassword(req.body.password);
         newUser.role = req.body.role || 'user';
+        newUser.avatar = "default-avatar.png";
 
         const savedUser = await newUser.save();
         return done(null, savedUser, req.flash('success', 'Account created successfully!'));

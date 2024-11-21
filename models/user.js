@@ -21,6 +21,10 @@ const userSchema = mongoose.Schema({
         enum: ['merchant', 'user'],
         default: 'user' // افتراضيًا سيكون المستخدم العادي
     },
+    avatar: {
+        type: String,
+        required: true
+    },
     cart: [{
         product_id: String,
         quantity: Number,

@@ -52,6 +52,7 @@ app.set('views', __dirname + '/views');  // Fix path for views
 
 // Serve static files
 app.use(express.static('public'));
+app.use(express.static('uploads'));
 app.use(express.static('node_modules'));
 
 
