@@ -175,7 +175,7 @@
                                                         <%= product.titleProduct %>
                                                     </span>
                                                     <span class="text-primary fw-bold">$<%= product.priceProduct %>
-                                                            </span>
+                                                    </span>
                                                 </div>
                                                 <!-- Add to Cart Button -->
                                                 <div class="text-center mt-auto">
@@ -194,86 +194,81 @@
                         </div>
                     </div>
                     <% }); %>
+                        <style>
+                            /* Initial state for the scroll animation */
+                            .product-card {
+                                opacity: 0;
+                                transform: translateY(30px);
+                                transition: opacity 0.6s ease, transform 0.6s ease;
+                            }
 
-                        <!-- CSS Styling and Animations for Product Cards -->
-                 !-- Product Display Section (same as before) -->
-                <!-- Include this CSS and JavaScript -->
-                
-                <style>
-                    /* Initial state for the scroll animation */
-                    .product-card {
-                        opacity: 0;
-                        transform: translateY(30px);
-                        transition: opacity 0.6s ease, transform 0.6s ease;
-                    }
-                
-                    /* Class to apply when the product is in view */
-                    .product-card.animate {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                
-                    /* Product Card Hover Effect */
-                    .product-card:hover {
-                        transform: translateY(-5px) scale(1.02);
-                        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-                    }
-                
-                    /* Product Image Hover Zoom and Rotation */
-                    .product-img-container {
-                        overflow: hidden;
-                        position: relative;
-                        border-top-left-radius: 15px;
-                        border-top-right-radius: 15px;
-                    }
-                
-                    .product-img {
-                        transition: transform 0.4s ease;
-                    }
-                
-                    .product-card:hover .product-img {
-                        transform: scale(1.1) rotate(2deg);
-                    }
-                
-                    /* Styling for Card Elements */
-                    .card {
-                        border-radius: 15px;
-                        overflow: hidden;
-                        background-color: #f8f9fa;
-                    }
-                
-                    .card-title {
-                        font-size: 1.2rem;
-                        color: #343a40;
-                    }
-                
-                    .card-text {
-                        font-size: 0.9rem;
-                        color: #6c757d;
-                    }
-                
-                    /* Add to Cart Button Styling */
-                    .add-to-cart-btn {
-                        background: linear-gradient(135deg, #007bff, #0056b3);
-                        color: #fff;
-                        font-weight: bold;
-                        transition: background 0.3s ease, box-shadow 0.3s ease;
-                    }
-                
-                    .add-to-cart-btn:hover {
-                        background: linear-gradient(135deg, #0056b3, #003d80);
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-                    }
-                
-                    /* Responsive Adjustments */
-                    @media (max-width: 576px) {
-                        .card-title {
-                            font-size: 1rem;
-                        }
-                
-                        .card-text {
-                            font-size: 0.85rem;
-                        }
-                    }
-                </style>
+                            /* Class to apply when the product is in view */
+                            .product-card.animate {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+
+                            /* Product Card Hover Effect */
+                            .product-card:hover {
+                                transform: translateY(-5px) scale(1.02);
+                                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+                            }
+
+                            /* Product Image Hover Zoom and Rotation */
+                            .product-img-container {
+                                overflow: hidden;
+                                position: relative;
+                                border-top-left-radius: 15px;
+                                border-top-right-radius: 15px;
+                            }
+
+                            .product-img {
+                                transition: transform 0.4s ease;
+                            }
+
+                            .product-card:hover .product-img {
+                                transform: scale(1.1) rotate(2deg);
+                            }
+
+                            /* Styling for Card Elements */
+                            .card {
+                                border-radius: 15px;
+                                overflow: hidden;
+                                background-color: #f8f9fa;
+                            }
+
+                            .card-title {
+                                font-size: 1.2rem;
+                                color: #343a40;
+                            }
+
+                            .card-text {
+                                font-size: 0.9rem;
+                                color: #6c757d;
+                            }
+
+                            /* Add to Cart Button Styling */
+                            .add-to-cart-btn {
+                                background: linear-gradient(135deg, #007bff, #0056b3);
+                                color: #fff;
+                                font-weight: bold;
+                                transition: background 0.3s ease, box-shadow 0.3s ease;
+                            }
+
+                            .add-to-cart-btn:hover {
+                                background: linear-gradient(135deg, #0056b3, #003d80);
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                            }
+
+                            /* Responsive Adjustments */
+                            @media (max-width: 576px) {
+                                .card-title {
+                                    font-size: 1rem;
+                                }
+
+                                .card-text {
+                                    font-size: 0.85rem;
+                                }
+                            }
+                        </style>
                         <%- include('../partails/footer') -%>

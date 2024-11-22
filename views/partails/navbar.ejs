@@ -10,39 +10,18 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/product">Home</a>
                 </li>
-
-                <% if (User) { %>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="<%= '/images/'+ User.avatar  %>" alt="avatar" class="rounded-circle"
-                                style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;"
-                                onerror="this.onerror=null; this.src='/images/default-avatar.png';">
-                            <%= User ? User.name : 'Guest' %>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/users/profile">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/users/logout">Logout</a></li>
-                        </ul>
+                <% if (User && User.role==='merchant' ) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/categories">Categories</a>
                     </li>
-
                     <% } %>
+
+                        <!-- إظهار رابط "إضافة منتجات" فقط إذا كان المستخدم تاجر -->
                         <% if (User && User.role==='merchant' ) { %>
                             <li class="nav-item">
-                                <a class="nav-link" href="/admin/categories">Categories</a>
+                                <a class="nav-link" href="/product/createProduct">Add New Products</a>
                             </li>
                             <% } %>
-
-                                <!-- إظهار رابط "إضافة منتجات" فقط إذا كان المستخدم تاجر -->
-                                <% if (User && User.role==='merchant' ) { %>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/product/createProduct">Add New Products</a>
-                                    </li>
-                                    <% } %>
             </ul>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 me-lg-4">
                 <% if (User) { %>
@@ -64,10 +43,25 @@
                         <a class="nav-link active" aria-current="page" href="/users/login">Sign in</a>
                     </li>
                     <% } else { %>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/users/logout">Logout</a>
-                        </li>
-                        <% } %>
+                        <% if (User) { %>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="<%= '/images/'+ User.avatar  %>" alt="avatar" class="rounded-circle"
+                                        style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;"
+                                        onerror="this.onerror=null; this.src='/images/default-avatar.png';">
+                                    <%= User ? User.name : 'Guest' %>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/users/profile">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="/users/logout">Logout</a></li>
+                                </ul>
+                            </li>
+                            <% }} %>
             </ul>
 
             <form class="d-flex" role="search">

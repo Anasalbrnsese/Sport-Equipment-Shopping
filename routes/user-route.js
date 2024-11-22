@@ -144,10 +144,16 @@ router.get('/profile', isAuthenticated, async (req, res) => {
 
 
 
-
-//upload user avater
+// Upload user avatar
 router.post('/uploadAvatar', upload.single('avatar'), async (req, res) => {
     try {
+        // تحقق من وجود الملف
+        if (!req.file) {
+            req.flash('error', 'No file uploaded.');
+            return res.redirect('/users/profile');
+        }
+
+        // إذا تم رفع الملف بنجاح
         let newFields = {
             avatar: req.file.filename,
         };

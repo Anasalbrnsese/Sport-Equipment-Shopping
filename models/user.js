@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
     },
     avatar: {
         type: String,
-        required: true
+        required: false
     },
     cart: [{
         product_id: String,
