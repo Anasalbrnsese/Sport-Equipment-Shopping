@@ -81,7 +81,7 @@ router.post('/signup', async (req, res, next) => {
     const { name, email, password, confirm_password, role, activationCode } = req.body;
     const activationCodeRequired = process.env.ACTIVATION_CODE_MERCHANT; // Replace with your activation code
 
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
     if (!passwordPattern.test(password)) {
         req.flash('error', 'Password must be at least 8 characters long, contain a lowercase letter, an uppercase letter, a number, and a special character.');
         return res.redirect('/users/signup');
