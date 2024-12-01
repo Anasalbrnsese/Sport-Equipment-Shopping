@@ -4,6 +4,9 @@ const bodyParser = require("body-parser");
 const routeProduct = require('./routes/route-products');
 const adminCategories = require('./routes/admin_category_route');
 const cart = require('./routes/cart-route');
+const orders = require('./routes/order-route');
+const users = require('./routes/user-route');
+const { connect } = require('mongoose');
 const app = express();
 const db = require('./config/database');
 const session = require('express-session');
@@ -31,6 +34,12 @@ app.use(passport.session());
 
 app.use('*', async (req, res, next) => {
     res.locals.User = req.user || null;
+    next();
+});
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 });
 
@@ -70,12 +79,7 @@ app.use('/product', routeProduct);
 app.use('/cart', cart);
 app.use('/', routeProduct);
 app.use('/admin/categories', adminCategories);
-
-
-
-// bring user routes
-const users = require('./routes/user-route');
-const { connect } = require('mongoose');
+app.use('/orders', orders);
 app.use('/users', users);
 
 

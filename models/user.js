@@ -31,6 +31,10 @@ const userSchema = mongoose.Schema({
         product_name: String,
         product_price: Number,
         imageProduct: String
+    }],
+    orders: [{ // تخزين الطلبات المرتبطة بالمستخدم
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'orders' // مرجع إلى سكيما الطلبات
     }]
 });
 

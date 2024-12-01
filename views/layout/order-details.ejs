@@ -1,0 +1,25 @@
+<%- include('../partails/header') -%>
+    <%- include('../partails/navbar') -%>
+        <h2>Order Details</h2>
+        <p><strong>Order Number:</strong>
+            <%= order._id %>
+        </p>
+        <p><strong>User:</strong>
+            <%= order.username %>
+        </p>
+        <p><strong>Total Price:</strong> $<%= order.totalPrice %>
+        </p>
+        <p><strong>Status:</strong>
+            <%= order.status %>
+        </p>
+        
+        <h3>Items in the Order</h3>
+        <ul>
+            <% order.items.forEach(item=> { %>
+                <li>
+                    <%= item.product_name %> - <%= item.quantity %> × $<%= item.product_price %> = $<%= item.product_price *
+                                    item.quantity %>
+                </li>
+                <% }) %>
+        </ul>
+        <%- include('../partails/footer') -%>
