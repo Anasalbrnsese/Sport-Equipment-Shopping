@@ -28,8 +28,6 @@ const isAuthenticated = (req, res, next) => {
 router.get('/login', (req, res) => {
     const cartCount = req.session.cart ? req.session.cart.length : 0;
     res.render('user/login', {
-        error: req.flash('error'),
-        success: req.flash('success'),
         cartCount: cartCount, // تمرير المتغير إلى الـ profile.ejs
         User: req.user // تمرير بيانات المستخدم إذا كانت موجودة
     });
@@ -70,8 +68,7 @@ router.post('/login', (req, res, next) => {
 // عرض نموذج التسجيل
 router.get('/signup', (req, res) => {
     res.render('user/login', {
-        error: req.flash('error'),
-        success: req.flash('success'),
+        
     });
 
 });
@@ -125,11 +122,8 @@ router.get('/profile', isAuthenticated, async (req, res) => {
         const cartCount = req.session.cart ? req.session.cart.length : 0;
         const userId = req.user ? req.user.id : null;
         const user = await User.findById(userId);
-
         res.render('user/profile', {
             User: user,
-            success: req.flash('success'),
-            error: req.flash('error'),
             cartCount: cartCount, // تمرير المتغير إلى الـ profile.ejs
             User: req.user // تمرير بيانات المستخدم إذا كانت موجودة
         });
