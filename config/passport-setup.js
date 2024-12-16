@@ -2,6 +2,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 // Serialize user instance to the session
 passport.serializeUser((user, done) => {
@@ -47,7 +48,6 @@ passport.use('local.signup', new localStrategy({
         return done(err); // Handle any errors
     }
 }));
-
 // Local strategy for login
 passport.use('local.login', new localStrategy({
     usernameField: 'email',
@@ -55,22 +55,26 @@ passport.use('local.login', new localStrategy({
     passReqToCallback: true
 }, async (req, email, password, done) => {
     try {
+        // Find the user by email
         const user = await User.findOne({ email: email });
 
         if (!user) {
             return done(null, false, req.flash('error', 'Email or Password is Wrong'));
         }
 
-        if (user.comparePasswords(password, user.password)) {
+        // Compare passwords
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
             return done(null, user, req.flash('success', 'Welcome back'));
-        }
-        else {
+        } else {
             return done(null, false, req.flash('error', 'Email or Password is Wrong!'));
         }
     } catch (err) {
+        console.error("Error in login strategy:", err);
         return done(null, false, req.flash('error', 'Something wrong happened'));
     }
 }));
+
 
 // إعداد Google OAuth 2.0
 passport.use(new GoogleStrategy({

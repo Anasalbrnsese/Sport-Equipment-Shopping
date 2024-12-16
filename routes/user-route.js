@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const passport = require('passport');
 const multer = require("multer");
-
+const bcrypt = require('bcrypt');
 
 //configure multer
 var storage = multer.diskStorage({
@@ -68,7 +68,7 @@ router.post('/login', (req, res, next) => {
 // عرض نموذج التسجيل
 router.get('/signup', (req, res) => {
     res.render('user/login', {
-        
+
     });
 
 });
@@ -133,7 +133,56 @@ router.get('/profile', isAuthenticated, async (req, res) => {
     }
 });
 
+// Route to handle changing the password
+router.post('/changePassword', isAuthenticated, async (req, res) => {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
 
+    try {
+        // Validate input
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            req.flash('error', 'All fields are required.');
+            return res.redirect('/users/profile');
+        }
+
+        if (newPassword !== confirmPassword) {
+            req.flash('error', 'New passwords do not match.');
+            return res.redirect('/users/profile');
+        }
+
+        // Validate the new password format
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+        if (!passwordPattern.test(newPassword)) {
+            req.flash('error', 'Password must be at least 8 characters long, contain a lowercase letter, an uppercase letter, a number, and a special character.');
+            return res.redirect('/users/profile');
+        }
+
+        // Fetch the user from the database
+        const user = await User.findById(req.user._id);
+
+        // Check if the current password matches
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            req.flash('error', 'Current password is incorrect.');
+            return res.redirect('/users/profile');
+        }
+
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update the user's password in the database
+        user.password = hashedPassword;
+        await user.save();
+
+        req.flash('success', 'Password changed successfully!');
+        res.redirect('/users/profile');
+
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'An error occurred while changing the password. Please try again later.');
+        res.redirect('/users/profile');
+    }
+});
 
 // Upload user avatar
 router.post('/uploadAvatar', upload.single('avatar'), async (req, res) => {

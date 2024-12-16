@@ -2,9 +2,8 @@
     <%- include('../partails/navbar') -%>
         <%- include('../partails/flashMessageLogin') -%>
             <div class="container light-style flex-grow-1 container-p-y" style="height:700px;">
-                <h4 class="font-weight-bold py-3 mb-4">
-                    Account settings
-                </h4>
+                <h4 class="font-weight-bold py-3 mb-4">Account settings</h4>
+
                 <!-- Profile Image Upload and Account Settings Form -->
                 <form action="/users/uploadAvatar" method="POST" enctype="multipart/form-data">
                     <div class="card overflow-hidden" style="border-radius:15px;">
@@ -27,12 +26,9 @@
                                     <!-- General Tab -->
                                     <div class="tab-pane fade active show" id="account-general">
                                         <div class="card-body media align-items-center">
-                                            <!-- Profile Image Display -->
                                             <img src="<%= '/images/'+ User.avatar  %>" alt="Profile Image"
                                                 onerror="this.onerror=null; this.src='/images/default-avatar.png';"
                                                 class="d-block ui-w-80" style="border-radius:50px;">
-
-                                            <!-- Upload New Image -->
                                             <div class="media-body ml-4" style="padding-top:22px;">
                                                 <label class="btn btn-outline-primary">
                                                     Upload new photo
@@ -40,16 +36,14 @@
                                                         id="avatar">
                                                 </label>
                                                 &nbsp;
-                                                <input type="submit" name="avatar"
-                                                    class="btn btn-default md-btn-flat" value="Save Image">
+                                                <input type="submit" name="avatar" class="btn btn-default md-btn-flat"
+                                                    value="Save Image">
                                                 <div class="text-light small mt-1">
                                                     Allowed JPG, GIF, or PNG. Max size of 800K
                                                 </div>
                                             </div>
                                         </div>
                                         <hr class="border-light m-0">
-
-                                        <!-- General Settings Form -->
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label class="form-label">Username</label>
@@ -77,24 +71,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="account-change-password">
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <label class="form-label">Current Password</label>
-                                                <input type="password" class="form-control" name="currentPassword">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">New Password</label>
-                                                <input type="password" class="form-control" name="newPassword">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Confirm New Password</label>
-                                                <input type="password" class="form-control" name="confirmPassword">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary mt-4">Change Password</button>
-                                        </div>
-                                    </div>
-
                                     <!-- Info Tab -->
                                     <div class="tab-pane fade" id="account-info">
                                         <div class="card-body">
@@ -106,14 +82,31 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Submit Buttons -->
-                    <div class="text-right mt-3">
-                        <button type="submit" class="btn btn-primary">Save changes</button>&nbsp;
-                        <button type="button" class="btn btn-default">Cancel</button>
-                    </div>
                 </form>
+
+                <!-- Change Password Form -->
+                <div class="tab-content">
+                    <div class="tab-pane fade" id="account-change-password">
+                        <form action="/users/changePassword" method="POST">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" name="currentPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" class="form-control" name="newPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control" name="confirmPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-4">Change Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-
             <%- include('../partails/footer') -%>
