@@ -4,15 +4,16 @@ const Product = require('../models/products');
 const { check, validationResult } = require('express-validator');
 const { error } = require("jquery");
 const Category = require('../models/category');
+const Order = require('../models/order'); // Adjust the path as needed
 
 
 // to check if user is loogged in 
-isAuthenticated = (req, res, next) => {
+const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) return next()
     res.redirect('/users/login')
 };
 
-isMerchant = (req, res, next) => {
+const isMerchant = (req, res, next) => {
     if (req.user.role === 'merchant') {
         return next();
     }
@@ -108,6 +109,18 @@ router.post('/createProduct', upload.single('image'), [
     }
 });
 
+
+
+// Route to fetch all orders
+router.get('/all_orders', isAuthenticated,isMerchant, async (req, res) => {
+    try {
+        const orders = await Order.find(); // Fetch all orders from the database
+        res.render('layout/all_orders', { orders }); // Pass the orders to the template
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
 
 // Route for fetching a single product by ID
 router.get('/:id', async (req, res) => {
