@@ -4,6 +4,20 @@ const router = express.Router();
 const Order = require('../models/order');
 const Product = require('../models/products');
 
+// to check if user is loogged in 
+const isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) return next()
+    res.redirect('/users/login')
+};
+
+const isMerchant = (req, res, next) => {
+    if (req.user.role === 'merchant') {
+        return next();
+    }
+    req.flash('error', 'ليس لديك الصلاحيات لإضافة منتجات.');
+    res.redirect('/product'); // إعادة توجيه المستخدم إلى صفحة المنتجات
+};
+
 router.post('/confirm-order', async (req, res) => {
     try {
         const { user_id, username, cartItem } = req.body;
@@ -52,6 +66,10 @@ router.post('/confirm-order', async (req, res) => {
 
         // Save the order
         await newOrder.save();
+        // Empty the cart in the session
+        req.session.cart = [];
+        // Mark the order as confirmed to prevent saving the cart during logout
+        req.session.orderConfirmed = true;
         req.flash('success', 'Your order has been placed successfully!');
         res.redirect(`/orders/order-details/${newOrder._id}`);
     } catch (error) {
@@ -61,14 +79,14 @@ router.post('/confirm-order', async (req, res) => {
     }
 });
 
-router.get('/order-details/:id', async (req, res) => {
+router.get('/order-details/:id', isAuthenticated, async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
         if (!order) {
             req.flash('error', 'Order not found');
             return res.redirect('/');
         }
-        res.render('layout/order-details', { order });
+        res.render('layout/order-details', { order }); // Pass `order` here
     } catch (error) {
         console.error(error);
         req.flash('error', 'Order not found');
@@ -76,6 +94,28 @@ router.get('/order-details/:id', async (req, res) => {
     }
 });
 
+
+router.get('/all-orders-user', isAuthenticated, async (req, res) => {
+    try {
+        // Fetch all orders for the logged-in user
+        const orders = await Order.find({ userId: req.user._id }); // Assuming userId is stored in Order
+        res.render('layout/all-orders-user', { orders });
+    } catch (error) {
+        console.error(error);
+        req.flash('error', 'Unable to fetch your orders.');
+        res.redirect('/');
+    }
+});
+// Route to fetch all orders
+router.get('/all_orders', isAuthenticated, isMerchant, async (req, res) => {
+    try {
+        const orders = await Order.find(); // Fetch all orders from the database
+        res.render('layout/all_orders', { orders }); // Pass the orders to the template
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
 
 module.exports = router;
 

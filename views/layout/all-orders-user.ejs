@@ -1,0 +1,50 @@
+<%- include('../partails/header') -%>
+    <%- include('../partails/navbar') -%>
+
+        <div class="container mt-5">
+            <h2 class="text-center mb-4">My Orders</h2>
+            <% if (orders.length===0) { %>
+                <div class="alert alert-warning text-center" role="alert">
+                    You have not placed any orders yet.
+                </div>
+                <% } else { %>
+                    <% orders.forEach(order=> { %>
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h4>Order Number: <%= order._id %>
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>User:</strong>
+                                    <%= order.username %>
+                                </p>
+                                <p><strong>Order Date:</strong>
+                                    <%= new Date(order.createdAt).toLocaleDateString() %>
+                                </p>
+                                <p><strong>Total Price:</strong> $<%= order.totalPrice %>
+                                </p>
+                                <p><strong>Status:</strong>
+                                    <span class="badge bg-<%= order.status === 'Completed' ? 'success' : 'warning' %>">
+                                        <%= order.status %>
+                                    </span>
+                                </p>
+                                <h5>Items:</h5>
+                                <ul class="list-group">
+                                    <% order.items.forEach(item=> { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <%= item.product_name %> - <%= item.quantity %> × $<%=
+                                                            item.product_price %>
+                                            </span>
+                                            <span class="badge bg-secondary">$<%= item.product_price * item.quantity %>
+                                                    </span>
+                                        </li>
+                                        <% }) %>
+                                </ul>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } %>
+        </div>
+
+        <%- include('../partails/footer') -%>

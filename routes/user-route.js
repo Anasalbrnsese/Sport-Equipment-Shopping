@@ -36,21 +36,28 @@ router.get('/login', (req, res) => {
 // تسجيل الدخول
 router.post('/login', (req, res, next) => {
     passport.authenticate('local.login', async (err, user, info) => {
-        if (err) return next(err); // إذا حدث خطأ في المصادقة
+        if (err) return next(err);
 
         if (!user) {
             req.flash('error', 'Invalid login credentials');
             return res.redirect('/users/login');
         }
 
-        // إذا كانت المصادقة ناجحة
         req.logIn(user, async (err) => {
             if (err) return next(err);
 
-            // استرجاع السلة من قاعدة البيانات وتخزينها في الجلسة
             try {
-                const userFromDb = await User.findById(user._id); // استرجاع المستخدم من قاعدة البيانات
-                req.session.cart = userFromDb.cart || []; // حفظ السلة في الجلسة إذا كانت موجودة
+                const userFromDb = await User.findById(user._id);
+
+                // إذا تم تأكيد الطلب، لا نقوم بتحميل السلة إلى الجلسة
+                if (req.session.orderConfirmed) {
+                    req.session.cart = [];
+                } else {
+                    // إذا لم يتم تأكيد الطلب بعد
+                    req.session.cart = userFromDb.cart || [];
+                }
+                console.log('Order Confirmed:', req.session.orderConfirmed);
+                console.log('User Cart from DB:', userFromDb.cart);
 
                 req.flash('success', 'Login successfully!');
                 return res.redirect('/users/profile');
@@ -228,6 +235,8 @@ router.get('/logout', async (req, res) => {
 
             // مسح السلة من الجلسة
             req.session.cart = [];
+            req.session.orderConfirmed = false; // Reset the orderConfirmed flag to prevent saving cart
+
 
         } catch (err) {
             console.log('Error saving cart during logout:', err);

@@ -109,19 +109,6 @@ router.post('/createProduct', upload.single('image'), [
     }
 });
 
-
-
-// Route to fetch all orders
-router.get('/all_orders', isAuthenticated,isMerchant, async (req, res) => {
-    try {
-        const orders = await Order.find(); // Fetch all orders from the database
-        res.render('layout/all_orders', { orders }); // Pass the orders to the template
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
-    }
-});
-
 // Route for fetching a single product by ID
 router.get('/:id', async (req, res) => {
     if (req.params.id === 'favicon.ico') {
