@@ -35,8 +35,7 @@ router.post('/confirm-order', async (req, res) => {
         }
         // Check if the phone number is provided
         if (!user.phone) {
-            req.flash('error', 'Please provide a phone number!');
-            console.log(userId);
+            req.flash('error', 'Please provide a phone number!'); 
             return res.redirect('/users/profile');
         }
         let totalPrice = 0;
@@ -80,10 +79,10 @@ router.post('/confirm-order', async (req, res) => {
         // Update the user's order list
         user.orders.push(newOrder._id);
         await user.save();
-
+        req.session.cart = [];
         // Clear the cart
         await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
-
+        
         // Redirect to the order details page
         req.flash('success', 'Your order has been placed successfully!');
         res.redirect(`/orders/order-details/${newOrder._id}`);

@@ -8,7 +8,7 @@
                 <div class="row">
                     <!-- Left column for Profile Image -->
                     <div class="col-md-4">
-                        <div class="card overflow-hidden" style="border-radius:15px;">
+                        <div class="card overflow-hidden mb-4" style="border-radius:15px;">
                             <div class="card-body text-center">
                                 <img src="<%= '/images/'+ User.avatar %>" alt="Profile Image"
                                     onerror="this.onerror=null; this.src='/images/default-avatar.png';"
@@ -29,7 +29,7 @@
 
                     <!-- Right column for Settings Forms -->
                     <div class="col-md-8">
-                        <div class="card overflow-hidden" style="border-radius:15px;">
+                        <div class="card overflow-hidden mb-4" style="border-radius:15px;">
                             <div class="card-body">
                                 <!-- Change Password Form -->
                                 <form action="/users/changePassword" method="POST">
@@ -82,7 +82,7 @@
                                     <h5 class="font-weight-bold">Change Phone Number</h5>
                                     <div class="form-group">
                                         <label class="form-label">Phone Number</label>
-                                        <input type="text" class="form-control" name="phone"
+                                        <input type="text" class="form-control" name="phone" placeholder="+962XXXXXXXXX"
                                             value="<%= User ? User.phone : '' %>">
                                     </div>
                                     <button type="submit" class="btn btn-primary mt-4">Save Phone Number</button>

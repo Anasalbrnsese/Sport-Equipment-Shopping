@@ -25,10 +25,10 @@
                                 <!-- إظهار رابط "إضافة منتجات" فقط إذا كان المستخدم تاجر -->
                                 <% if (User && User.role==='merchant' ) { %>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/orders/all_orders">My Orders</a>
+                                        <a class="nav-link" href="/orders/all_orders">Manage All Orders</a>
                                     </li>
                                     <% } %>
-                                        <% if (User && User.role==='user' ) { %>
+                                        <% if (User && (User.role==='user' || User.role==='merchant' )) { %>
                                             <li class="nav-item">
                                                 <a class="nav-link" href="/orders/all-orders-user">My Orders</a>
                                             </li>
@@ -37,12 +37,14 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 me-lg-4">
                 <% if (User) { %>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/cart">
-                            🛒 (
-                            <%= cart.length %>
-                                )
+                        <a class="nav-link active cart-link" aria-current="page" href="/cart">
+                            <i class="fas fa-shopping-cart me-2"></i> <!-- Shopping cart icon -->
+                            <span class="badge bg-danger ms-2" id="cartCount">
+                                <%= cart.length %>
+                            </span> <!-- Cart item count -->
                         </a>
                     </li>
+
                     <% } %>
             </ul>
 
@@ -82,3 +84,117 @@
         </div>
     </div>
 </nav>
+
+<style>
+    /* General Navbar Styling */
+    .navbar {
+        background-color: #343a40;
+        /* Dark background */
+    }
+
+    .navbar-nav .nav-link {
+        color: #f8f9fa;
+        font-weight: 500;
+        transition: color 0.3s ease, transform 0.3s ease-in-out;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: #007bff;
+        /* Blue color on hover */
+        transform: scale(1.1);
+    }
+
+    /* Cart Icon and Count Styling */
+    .cart-link {
+        position: relative;
+        font-size: 1.3rem;
+        color: #f8f9fa;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .cart-link:hover {
+        color: #28a745;
+        /* Green on hover */
+    }
+
+    .cart-link .fa-shopping-cart {
+        font-size: 1.6rem;
+        /* Increased cart icon size */
+        color: #28a745;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .cart-link .fa-shopping-cart:hover {
+        transform: scale(1.2);
+    }
+
+    /* Adjust the cart count positioning */
+    #cartCount {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 0.2rem 0.4rem;
+        border-radius: 50%;
+        position: absolute;
+        top: 10px;
+        /* Align with the top of the cart icon */
+        right: 10px;
+        /* Adjust the position to be near the cart */
+        transform: translate(50%, -50%);
+        /* Center the badge relative to the cart icon */
+        background-color: #dc3545;
+        color: white;
+        animation: bounce 0.5s ease-in-out infinite;
+    }
+
+    /* Cart count bounce animation */
+    @keyframes bounce {
+
+        0%,
+        100% {
+            transform: translate(50%, -50%);
+        }
+
+        50% {
+            transform: translate(50%, -60%);
+        }
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+        border-radius: 0.5rem;
+        padding: 0.5rem 0;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .dropdown-item {
+        transition: background-color 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #343a40;
+    }
+
+    /* Search Form Styling */
+    .form-control {
+        border-radius: 20px;
+        padding-left: 2rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: #e9ecef;
+        border-color: #007bff;
+    }
+
+    .btn-outline-success {
+        border-radius: 20px;
+        background-color: #28a745;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #218838;
+    }
+</style>
