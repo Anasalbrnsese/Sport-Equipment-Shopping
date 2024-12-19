@@ -159,12 +159,20 @@ router.post('/updatePhone', (req, res) => {
         });
 });
 
-
 router.post('/changePassword', isAuthenticated, async (req, res) => {
     const { currentPassword, newPassword, confirmPassword } = req.body;
 
     try {
-        // Validate input
+        // استرجاع المستخدم من قاعدة البيانات
+        const user = await User.findById(req.user._id);  // Initialize user first
+
+        // تحقق مما إذا كان المستخدم قد سجل دخوله باستخدام جوجل
+        if (user && user.googleId) {
+            req.flash('error', 'You cannot change your password when logged in with Google.');
+            return res.redirect('/users/profile');
+        }
+
+        // التحقق من المدخلات
         if (!currentPassword || !newPassword || !confirmPassword) {
             req.flash('error', 'All fields are required.');
             return res.redirect('/users/profile');
@@ -175,28 +183,32 @@ router.post('/changePassword', isAuthenticated, async (req, res) => {
             return res.redirect('/users/profile');
         }
 
-        // Validate the new password format
+        // التحقق من تنسيق كلمة المرور الجديدة
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
         if (!passwordPattern.test(newPassword)) {
             req.flash('error', 'Password must be at least 8 characters long, contain a lowercase letter, an uppercase letter, a number, and a special character.');
             return res.redirect('/users/profile');
         }
 
-        // Fetch the user from the database
-        const user = await User.findById(req.user._id);
+        // إذا كان المستخدم لم يسجل دخوله عبر جوجل، تحقق من كلمة المرور الحالية
+        if (user && !user.googleId) {
+            if (!currentPassword) {
+                req.flash('error', 'Current password is required.');
+                return res.redirect('/users/profile');
+            }
 
-        // Check if the current password matches
-        const isMatch = await bcrypt.compare(currentPassword, user.password);
-        if (!isMatch) {
-            req.flash('error', 'Current password is incorrect.');
-            return res.redirect('/users/profile');
+            const isMatch = await bcrypt.compare(currentPassword, user.password);
+            if (!isMatch) {
+                req.flash('error', 'Current password is incorrect.');
+                return res.redirect('/users/profile');
+            }
         }
 
-        // Hash the new password
+        // تشفير كلمة المرور الجديدة
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-        // Update the user's password in the database
+        // تحديث كلمة مرور المستخدم في قاعدة البيانات
         user.password = hashedPassword;
         await user.save();
 
@@ -209,6 +221,7 @@ router.post('/changePassword', isAuthenticated, async (req, res) => {
         res.redirect('/users/profile');
     }
 });
+
 
 
 // Upload user avatar
