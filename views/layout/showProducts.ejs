@@ -1,5 +1,6 @@
 <%- include('../partails/header') -%>
     <%- include('../partails/navbar') -%>
+
         <div class="container my-5">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -77,17 +78,56 @@
                                             <button class="btn btn-gradient btn-lg px-5 py-3 fs-5 w-100"
                                                 type="submit">Add to Cart</button>
                                         </form>
-
                                         <!-- Buy Now Button -->
                                         <button class="btn btn-outline-gradient btn-lg px-5 py-3 fs-5 w-100">Buy
                                             Now</button>
+
+                                        <% if (User && User.role==='merchant' ) { %>
+                                            <div class="btn btn-outline-gradient px-5 py-3 fs-5 w-100 d-flex justify-content-between mt-3">
+                                                <!-- Edit Button -->
+                                                <a href="/product/edit/<%= product._id %>" class="btn btn-warning me-3">
+                                                    <i class="fas fa-edit me-2"></i> Edit
+                                                </a>
+
+                                                <!-- Delete Button -->
+                                                <form action="/product/delete/<%= product._id %>" method="POST"
+                                                    class="d-inline">
+                                                    <button class="btn btn-danger" id="delete-button">
+                                                        <i class="fas fa-trash me-2"></i> حذف
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            <script>
+                                                document.getElementById('delete-button').addEventListener('click', function (event) {
+                                                    event.preventDefault(); // منع الإجراء الافتراضي
+                                                    Swal.fire({
+                                                        title: 'هل أنت متأكد؟',
+                                                        text: "لن تتمكن من التراجع عن هذا الإجراء!",
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: '#d33',
+                                                        cancelButtonColor: '#3085d6',
+                                                        confirmButtonText: 'نعم، احذف!',
+                                                        cancelButtonText: 'إلغاء'
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            // إذا تم التأكيد، أرسل النموذج
+                                                            event.target.closest('form').submit();
+                                                        }
+                                                    });
+                                                });
+                                            </script>
+                                            </form>
                                     </div>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
 
         <%- include('../partails/footer') -%>
@@ -121,6 +161,7 @@
                 .product-image:hover {
                     transform: scale(1.05);
                 }
+
                 /* Button Styles */
                 .btn-gradient {
                     background: linear-gradient(45deg, #ff5e62, #ff9966);
@@ -157,7 +198,6 @@
                     }
 
                     .btn-gradient {
-                        
                         width: 113px;
                     }
 
@@ -170,7 +210,6 @@
                         /* Adjust width on small screens */
                     }
                 }
-
 
                 .product-image {
                     object-fit: fill;
