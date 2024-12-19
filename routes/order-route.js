@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const Order = require('../models/order');
 const Product = require('../models/products');
+const User = require('../models/user');
 
 // to check if user is loogged in 
 const isAuthenticated = (req, res, next) => {
@@ -20,13 +21,24 @@ const isMerchant = (req, res, next) => {
 
 router.post('/confirm-order', async (req, res) => {
     try {
-        const { user_id, username, cartItem } = req.body;
+        // Get the user ID from the authenticated user
+        const userId = req.user._id;  // This assumes req.user is set via authentication middleware
+        const { username, cartItem } = req.body;
 
-        if (!cartItem || cartItem.length === 0) {
-            req.flash('error', 'Your cart is empty!');
-            return res.redirect('/cart');
+
+
+        // Find the user by their ID (using req.user._id)
+        const user = await User.findById(userId);
+        if (!user) {
+            req.flash('error', 'User not found.');
+            return res.redirect('/users/profile');
         }
-
+        // Check if the phone number is provided
+        if (!user.phone) {
+            req.flash('error', 'Please provide a phone number!');
+            console.log(userId);
+            return res.redirect('/users/profile');
+        }
         let totalPrice = 0;
         const items = [];
 
@@ -47,16 +59,14 @@ router.post('/confirm-order', async (req, res) => {
                     quantity: parsedItem.quantity
                 });
             } else {
-                // Handle the case where the product is not found
                 req.flash('error', `Product with ID ${parsedItem.product_id} not found.`);
-                console.log(product);
                 return res.redirect('/cart');
-
             }
         }
-        // Now create the new order after gathering the data
+
+        // Create the new order with phone number
         const newOrder = new Order({
-            userId: user_id,
+            userId: userId,
             username,
             items,
             totalPrice,
@@ -66,10 +76,15 @@ router.post('/confirm-order', async (req, res) => {
 
         // Save the order
         await newOrder.save();
-        // Empty the cart in the session
-        req.session.cart = [];
-        // Mark the order as confirmed to prevent saving the cart during logout
-        req.session.orderConfirmed = true;
+
+        // Update the user's order list
+        user.orders.push(newOrder._id);
+        await user.save();
+
+        // Clear the cart
+        await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
+
+        // Redirect to the order details page
         req.flash('success', 'Your order has been placed successfully!');
         res.redirect(`/orders/order-details/${newOrder._id}`);
     } catch (error) {
@@ -78,6 +93,7 @@ router.post('/confirm-order', async (req, res) => {
         res.redirect('/cart');
     }
 });
+
 
 router.get('/order-details/:id', isAuthenticated, async (req, res) => {
     try {
@@ -116,39 +132,34 @@ router.get('/all_orders', isAuthenticated, isMerchant, async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+router.post('/update-status', isAuthenticated, isMerchant, async (req, res) => {
+    try {
+        const { orderId, newStatus } = req.body;
+
+        // Validate input
+        if (!orderId || !['Preparing', 'On the Way', 'Completed'].includes(newStatus)) {
+            req.flash('error', 'Invalid status or order ID.');
+            return res.redirect('/orders/all_orders');
+        }
+
+        // Find and update the order
+        const order = await Order.findById(orderId);
+        if (!order) {
+            req.flash('error', 'Order not found.');
+            return res.redirect('/orders/all_orders');
+        }
+
+        order.status = newStatus; // Update the status
+        await order.save();
+
+        req.flash('success', `Order status updated to "${newStatus}" successfully!`);
+        res.redirect('/orders/all_orders');
+    } catch (error) {
+        console.error(error);
+        req.flash('error', 'Failed to update order status.');
+        res.redirect('/orders/all_orders');
+    }
+});
+
 
 module.exports = router;
-
-// router.get('/my-orders', async (req, res) => {
-//     // try {
-//     //     const user = await user.findById(req.user._id).populate('orders');
-
-//     //     res.render('my-orders', {
-//     //         title: 'My Orders',
-//     //         orders: user.orders,
-//     //     });
-//     // } catch (err) {
-//     //     console.error(err);
-//     //     req.flash('error', 'Error retrieving your orders.');
-//     //     res.redirect('/');
-//     // }
-// });
-// router.get('/all-orders', async (req, res) => {
-//     // try {
-//     //     if (req.user.role !== 'merchant') {
-//     //         req.flash('error', 'You do not have permission to view this page.');
-//     //         return res.redirect('/');
-//     //     }
-
-//     //     const orders = await Order.find().populate('userId', 'name email');
-
-//     //     res.render('all-orders', {
-//     //         title: 'All Orders',
-//     //         orders: orders,
-//     //     });
-//     // } catch (err) {
-//     //     console.error(err);
-//     //     req.flash('error', 'Error retrieving orders.');
-//     //     res.redirect('/');
-//     // }
-// });

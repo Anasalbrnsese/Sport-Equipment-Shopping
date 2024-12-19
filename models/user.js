@@ -35,7 +35,11 @@ const userSchema = mongoose.Schema({
     orders: [{ // تخزين الطلبات المرتبطة بالمستخدم
         type: mongoose.Schema.Types.ObjectId,
         ref: 'orders' // مرجع إلى سكيما الطلبات
-    }]
+    }],
+    phone: {
+        type: String,
+        default: ''
+    }
 });
 
 // دالة لتشفير كلمة المرور

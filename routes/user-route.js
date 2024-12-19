@@ -49,16 +49,6 @@ router.post('/login', (req, res, next) => {
             try {
                 const userFromDb = await User.findById(user._id);
 
-                // إذا تم تأكيد الطلب، لا نقوم بتحميل السلة إلى الجلسة
-                if (req.session.orderConfirmed) {
-                    req.session.cart = [];
-                } else {
-                    // إذا لم يتم تأكيد الطلب بعد
-                    req.session.cart = userFromDb.cart || [];
-                }
-                console.log('Order Confirmed:', req.session.orderConfirmed);
-                console.log('User Cart from DB:', userFromDb.cart);
-
                 req.flash('success', 'Login successfully!');
                 return res.redirect('/users/profile');
             } catch (err) {
@@ -140,7 +130,36 @@ router.get('/profile', isAuthenticated, async (req, res) => {
     }
 });
 
-// Route to handle changing the password
+const Joi = require('joi'); // You can use Joi or any other validation library for input validation
+
+router.post('/updatePhone', (req, res) => {
+    const userId = req.user._id;  // Get the user ID from the session or token
+    const { phone } = req.body;   // Get the new phone number from the form
+
+    // Define a validation schema for the phone number
+    const phoneSchema = Joi.string().pattern(/^(\+9627\d{8})$/).message('Invalid Jordanian phone number');
+
+    // Validate the phone number format
+    const { error } = phoneSchema.validate(phone);
+
+    if (error) {
+        req.flash('error', 'Please enter a valid Jordanian phone number (e.g., +9627XXXXXXXX).');
+        return res.redirect('/users/profile');  // Redirect to the settings page if validation fails
+    }
+
+    // If phone number is valid, update the user
+    User.findByIdAndUpdate(userId, { phone }, { new: true })
+        .then(updatedUser => {
+            req.flash('success', 'Phone number updated successfully!');
+            res.redirect('/users/profile');  // Redirect to the settings page after update
+        })
+        .catch(err => {
+            req.flash('error', 'An error occurred while updating the phone number.');
+            res.redirect('/users/profile');
+        });
+});
+
+
 router.post('/changePassword', isAuthenticated, async (req, res) => {
     const { currentPassword, newPassword, confirmPassword } = req.body;
 
@@ -191,6 +210,7 @@ router.post('/changePassword', isAuthenticated, async (req, res) => {
     }
 });
 
+
 // Upload user avatar
 router.post('/uploadAvatar', upload.single('avatar'), async (req, res) => {
     try {
@@ -226,12 +246,12 @@ router.get('/logout', async (req, res) => {
         try {
             const userFromDb = await User.findById(req.user._id);
 
-            // إذا كانت السلة تحتوي على منتجات، نقوم بتخزينها في قاعدة البيانات
-            if (req.session.cart.length > 0) {
-                console.log('Saving cart:', req.session.cart);
-                userFromDb.cart = req.session.cart;
-                await userFromDb.save();
-            }
+            // // إذا كانت السلة تحتوي على منتجات، نقوم بتخزينها في قاعدة البيانات
+            // if (req.session.cart.length > 0) {
+            //     console.log('Saving cart:', req.session.cart);
+            //     userFromDb.cart = req.session.cart;
+            //     await userFromDb.save();
+            // }
 
             // مسح السلة من الجلسة
             req.session.cart = [];
@@ -264,7 +284,7 @@ router.get('/auth/google/callback',
             const userFromDb = await User.findById(req.user._id); // استرجاع المستخدم من قاعدة البيانات
 
             // استرجاع السلة من قاعدة البيانات وتخزينها في الجلسة
-            req.session.cart = userFromDb.cart || []; // حفظ السلة في الجلسة
+            // req.session.cart = userFromDb.cart || []; // حفظ السلة في الجلسة
 
             // عرض رسالة النجاح
             req.flash('success', 'Successfully logged in via Google. Welcome to our platform!');

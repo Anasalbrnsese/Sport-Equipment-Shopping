@@ -18,13 +18,20 @@
                                 <p><strong>User:</strong>
                                     <%= order.username %>
                                 </p>
+                                <p><strong>Phone Number:</strong>
+                                    <%= User.phone %>
+                                </p>
                                 <p><strong>Order Date:</strong>
                                     <%= new Date(order.createdAt).toLocaleDateString() %>
                                 </p>
                                 <p><strong>Total Price:</strong> $<%= order.totalPrice %>
                                 </p>
                                 <p><strong>Status:</strong>
-                                    <span class="badge bg-<%= order.status === 'Completed' ? 'success' : 'warning' %>">
+                                    <span class="badge 
+                            <%= order.status === 'Completed' ? 'bg-success' : 
+                                order.status === 'On the Way' ? 'bg-info' : 
+                                order.status === 'Preparing' ? 'bg-warning' : 
+                                'bg-secondary' %>">
                                         <%= order.status %>
                                     </span>
                                 </p>
