@@ -78,12 +78,9 @@
                                             <button class="btn btn-gradient btn-lg px-5 py-3 fs-5 w-100"
                                                 type="submit">Add to Cart</button>
                                         </form>
-                                        <!-- Buy Now Button -->
-                                        <button class="btn btn-outline-gradient btn-lg px-5 py-3 fs-5 w-100">Buy
-                                            Now</button>
-
                                         <% if (User && User.role==='merchant' ) { %>
-                                            <div class="btn btn-outline-gradient px-5 py-3 fs-5 w-100 d-flex justify-content-between mt-3">
+                                            <div
+                                                class="btn btn-outline-gradient px-5 py-3 fs-5 w-100 d-flex justify-content-between mt-3">
                                                 <!-- Edit Button -->
                                                 <a href="/product/edit/<%= product._id %>" class="btn btn-warning me-3">
                                                     <i class="fas fa-edit me-2"></i> Edit
@@ -102,14 +99,14 @@
                                                 document.getElementById('delete-button').addEventListener('click', function (event) {
                                                     event.preventDefault(); // منع الإجراء الافتراضي
                                                     Swal.fire({
-                                                        title: 'هل أنت متأكد؟',
-                                                        text: "لن تتمكن من التراجع عن هذا الإجراء!",
+                                                        title: 'Are you sure?',
+                                                        text: "You won't be able to undo this action!",
                                                         icon: 'warning',
                                                         showCancelButton: true,
                                                         confirmButtonColor: '#d33',
                                                         cancelButtonColor: '#3085d6',
-                                                        confirmButtonText: 'نعم، احذف!',
-                                                        cancelButtonText: 'إلغاء'
+                                                        confirmButtonText: 'Yes, delete!',
+                                                        cancelButtonText: 'Cancel'
                                                     }).then((result) => {
                                                         if (result.isConfirmed) {
                                                             // إذا تم التأكيد، أرسل النموذج
