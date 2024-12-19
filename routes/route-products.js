@@ -20,31 +20,91 @@ const isMerchant = (req, res, next) => {
     req.flash('error', 'ليس لديك الصلاحيات لإضافة منتجات.');
     res.redirect('/product'); // إعادة توجيه المستخدم إلى صفحة المنتجات
 };
-
+// مسار العرض الأولي للمنتجات
 router.get('/', async (req, res) => {
     try {
-        const categoryId = req.query.category;  // Get category from the query string
-        const filter = categoryId ? { category: categoryId } : {};  // If category is selected, filter by it
+        const filter = {};  // يجب تعريف filter بشكل صحيح هنا
 
         const products = await Product.find(filter).populate('category');
         let chunk = [];
-        let chunkSize = 3;  // Adjust chunk size if needed
+        let chunkSize = 3; // حجم الشريحة (chunks)
 
-        // Create chunks of products
+        // تقسيم المنتجات إلى مجموعات
         for (let i = 0; i < products.length; i += chunkSize) {
-            chunk.push(products.slice(i, i + chunkSize));  // Create chunks of 3 products each
+            chunk.push(products.slice(i, i + chunkSize));
         }
-        // Fetch all categories for the category filter dropdown
+
+        res.render('layout/index', {
+            chunk: chunk,
+            categories: await Category.find(), // تمرير الفئات
+            categoryId: '', // عدم وجود فئة محددة
+            search: '', // إفراغ النص في حقل البحث
+            message: req.flash('info'),
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Error fetching products');
+    }
+});
+
+// مسار البحث
+router.get('/search', async (req, res) => {
+    try {
+        const search = req.query.search || ''; // النص المدخل في مربع البحث
+        const filter = {
+            titleProduct: { $regex: search, $options: 'i' }, // البحث بشكل غير حساس لحالة الأحرف
+        };
+
+        const products = await Product.find(filter).populate('category');
+        let chunk = [];
+        let chunkSize = 3;
+
+        // تقسيم المنتجات إلى مجموعات
+        for (let i = 0; i < products.length; i += chunkSize) {
+            chunk.push(products.slice(i, i + chunkSize));
+        }
+
         const categories = await Category.find();
 
         res.render('layout/index', {
             chunk: chunk,
             categories: categories,
-            categoryId: categoryId,  // To keep track of selected category
+            categoryId: '', // عدم وجود فئة محددة
+            search: search, // الاحتفاظ بالنص المدخل في مربع البحث
             message: req.flash('info'),
         });
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        res.status(500).send('Error fetching products');
+    }
+});
+
+// مسار الفئات
+router.get('/filter', async (req, res) => {
+    try {
+        const categoryId = req.query.category || ''; // الفئة المحددة
+        const filter = categoryId ? { category: categoryId } : {}; // فلترة بالفئة أو عرض جميع المنتجات
+
+        const products = await Product.find(filter).populate('category');
+        let chunk = [];
+        let chunkSize = 3;
+
+        // تقسيم المنتجات إلى مجموعات
+        for (let i = 0; i < products.length; i += chunkSize) {
+            chunk.push(products.slice(i, i + chunkSize));
+        }
+
+        const categories = await Category.find();
+
+        res.render('layout/index', {
+            chunk: chunk,
+            categories: categories,
+            categoryId: categoryId, // تحديد الفئة المحددة
+            search: '', // إفراغ النص في حقل البحث
+            message: req.flash('info'),
+        });
+    } catch (err) {
+        console.error(err);
         res.status(500).send('Error fetching products');
     }
 });
