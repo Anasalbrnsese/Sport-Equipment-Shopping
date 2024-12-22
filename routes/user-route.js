@@ -4,6 +4,8 @@ const User = require('../models/user');
 const passport = require('passport');
 const multer = require("multer");
 const bcrypt = require('bcrypt');
+const Joi = require('joi');
+
 
 //configure multer
 var storage = multer.diskStorage({
@@ -20,8 +22,17 @@ var upload = multer({ storage: storage });
 
 // للتحقق مما إذا كان المستخدم مسجلاً
 const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) return next();
-    res.redirect('/users/login');
+    if (!req.isAuthenticated()) {
+        const error = new Error('Unauthorized')
+        error.statusCode = 401
+        throw error
+    }
+    if (!req.user.isVerified) {
+        
+        req.flash('error', "you need to verify your email");
+        return res.redirect('/users/login')
+    }
+    next()
 };
 
 // عرض تسجيل الدخول
@@ -113,6 +124,32 @@ router.post('/signup', async (req, res, next) => {
     })(req, res, next);
 });
 
+
+
+router.get('/auth/verify/:token', async (req, res) => {
+    const token = req.params.token;
+
+    try {
+        const user = await User.findOne({ magicToken: token, magicTokenExpiry: { $gt: Date.now() } });
+        if (!user) {
+            req.flash('error', 'Invalid or expired token');
+            return res.redirect('/signup');
+        }
+
+        user.magicToken = undefined; // Clear the token
+        user.magicTokenExpiry = undefined; // Clear the expiry
+        user.isVerified = true; // Mark the user as verified
+
+        await user.save();
+
+        req.flash('success', 'Your account has been verified. You can now log in.');
+        res.redirect('/users/login');
+    } catch (err) {
+        req.flash('error', 'Something went wrong. Please try again.');
+        res.redirect('/users/signup');
+    }
+});
+
 // الملف الشخصي
 router.get('/profile', isAuthenticated, async (req, res) => {
     try {
@@ -122,7 +159,6 @@ router.get('/profile', isAuthenticated, async (req, res) => {
         res.render('user/profile', {
             User: user,
             cartCount: cartCount, // تمرير المتغير إلى الـ profile.ejs
-            User: req.user // تمرير بيانات المستخدم إذا كانت موجودة
         });
     } catch (err) {
         console.error(err);
@@ -130,7 +166,7 @@ router.get('/profile', isAuthenticated, async (req, res) => {
     }
 });
 
-const Joi = require('joi'); // You can use Joi or any other validation library for input validation
+
 
 router.post('/updatePhone', (req, res) => {
     const userId = req.user._id;  // Get the user ID from the session or token

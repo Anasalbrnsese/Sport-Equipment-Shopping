@@ -68,10 +68,12 @@
                                         <label class="form-label">E-mail</label>
                                         <input type="text" id="email" class="form-control" name="email"
                                             value="<%= User ? User.email : '' %>" disabled>
-                                        <div class="alert alert-warning mt-3">
-                                            Your email is not confirmed. Please check your inbox.<br>
-                                            <a href="javascript:void(0)">Resend confirmation</a>
-                                        </div>
+                                        <% if(User.isVerified==false){ %>
+                                            <div class="alert alert-warning mt-3">
+                                                Your email is not confirmed. Please check your inbox.<br>
+                                                <a href="javascript:void(0)">Resend confirmation</a>
+                                            </div>
+                                            <% } %>
                                     </div>
                                 </form>
 

@@ -39,7 +39,10 @@ const userSchema = mongoose.Schema({
     phone: {
         type: String,
         default: ''
-    }
+    },
+    magicToken: String,
+    magicTokenExpiry: Date,
+    isVerified: { type: Boolean, default: false }
 });
 
 // دالة لتشفير كلمة المرور

@@ -3,6 +3,9 @@ const localStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto'); // To generate unique tokens
+const nodemailer = require('nodemailer'); // For sending emails
+
 
 // Serialize user instance to the session
 passport.serializeUser((user, done) => {
@@ -19,7 +22,7 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-// Local strategy for signup
+
 passport.use('local.signup', new localStrategy({
     usernameField: 'email',
     passwordField: 'password',
@@ -35,15 +38,46 @@ passport.use('local.signup', new localStrategy({
             return done(null, false, req.flash('error', 'Email is already registered'));
         }
 
+        // Generate a magic link token and expiration
+        const magicToken = crypto.randomBytes(32).toString('hex');
+        const magicTokenExpiry = Date.now() + 3600000; // Token valid for 1 hour
+
         const newUser = new User();
         newUser.name = req.body.name;
         newUser.email = req.body.email;
-        newUser.password = newUser.hashPassword(req.body.password);
+        newUser.password = newUser.hashPassword(req.body.password); // Save hashed password (optional)
         newUser.role = req.body.role || 'user';
         newUser.avatar = "default-avatar.png";
+        newUser.magicToken = magicToken;
+        newUser.magicTokenExpiry = magicTokenExpiry;
+        newUser.isVerified = false; // User is not verified yet
 
-        const savedUser = await newUser.save();
-        return done(null, savedUser, req.flash('success', 'Account created successfully!'));
+        await newUser.save();
+
+        // Send magic link via email
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST, // e.g., smtp.gmail.com
+            port: process.env.EMAIL_PORT, // e.g., 587
+            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+            auth: {
+                user: process.env.EMAIL_USER, // your email
+                pass: process.env.EMAIL_PASS  // your email password or app-specific password
+            }
+        });
+
+        const magicLink = `${req.protocol}://${req.get('host')}/users/auth/verify/${magicToken}`;
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: newUser.email,
+            subject: 'Verify your account',
+            text: `Click the following link to verify your account: ${magicLink}`,
+            html: `<p>Click the following link to verify your account:</p><a href="${magicLink}">click here to verify your email.</a>`
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return done(null, false, req.flash('success', 'A verification link has been sent to your email.'));
     } catch (err) {
         return done(err); // Handle any errors
     }
@@ -75,6 +109,7 @@ passport.use('local.login', new localStrategy({
         return done(null, false, req.flash('error', 'Something wrong happened'));
     }
 }));
+
 
 // إعداد Google OAuth 2.0
 passport.use(new GoogleStrategy({
