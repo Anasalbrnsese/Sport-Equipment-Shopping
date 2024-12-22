@@ -48,6 +48,7 @@ passport.use('local.signup', new localStrategy({
         return done(err); // Handle any errors
     }
 }));
+
 // Local strategy for login
 passport.use('local.login', new localStrategy({
     usernameField: 'email',
@@ -75,12 +76,12 @@ passport.use('local.login', new localStrategy({
     }
 }));
 
-
 // إعداد Google OAuth 2.0
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/users/auth/google/callback",
+    scope: ['openid', 'profile', 'email'] // النطاقات المطلوبة
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         // تحقق ما إذا كان المستخدم موجودًا بناءً على googleId
@@ -94,6 +95,7 @@ passport.use(new GoogleStrategy({
         user = await User.findOne({ email: profile.emails[0].value });
 
         if (user) {
+            // إذا كان المستخدم موجودًا، قم بإضافة googleId
             user.googleId = profile.id;
             await user.save();
             return done(null, user);
@@ -104,6 +106,7 @@ passport.use(new GoogleStrategy({
             googleId: profile.id,
             name: profile.displayName,
             email: profile.emails[0].value,
+            avatar: profile.photos ? profile.photos[0].value : 'default-avatar.png', // إضافة صورة للملف الشخصي إذا كانت موجودة
         });
 
         // تجاوز التحقق من كلمة المرور في حال كان تسجيل الدخول عبر Google
@@ -112,7 +115,7 @@ passport.use(new GoogleStrategy({
         return done(null, user);
 
     } catch (err) {
-        return done(err, null);
+        return done(err, null); // إرجاع الخطأ في حال حدوثه
     }
 }));
 
