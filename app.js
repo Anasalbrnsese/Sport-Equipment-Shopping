@@ -8,25 +8,32 @@ const orders = require('./routes/order-route');
 const users = require('./routes/user-route');
 const { connect } = require('mongoose');
 const app = express();
-const db = require('./config/database');
+require('./config/database');
 const session = require('express-session');
+const mongodbSession = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportSetup = require('./config/passport-setup');
 const favicon = require('serve-favicon');
 const path = require('path');
 
+const mongodbStore = new mongodbSession({
+    uri: 'mongodb://localhost:27017/productdb',
+    collection: 'sessions',
+    expiresIn: 60000 * 15
+})
 
 // session and flach config
 app.use(session({
     secret: 'lorem ipsum',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 * 15 }
+    cookie: { maxAge: 60000 * 15 },
+    store: mongodbStore
 }));
 
 app.use(flash());
-
+ 
 
 //bring passport 
 app.use(passport.initialize());
