@@ -110,11 +110,24 @@ router.get('/order-details/:id', isAuthenticated, async (req, res) => {
 });
 
 
+router.get('/lastOrder', async (req, res) => {
+    try {
+        const lastOrder = await Order.findOne().sort({ createdAt: -1 }); // Sort by newest
+        res.render('layout/order-details', { lastOrder: lastOrder });
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});
+
+
 router.get('/all-orders-user', isAuthenticated, async (req, res) => {
     try {
         // Fetch all orders for the logged-in user
         const orders = await Order.find({ userId: req.user._id }); // Assuming userId is stored in Order
-        res.render('layout/all-orders-user', { orders });
+        res.render('layout/all-orders-user', { orders, lastOrder: orders[orders.length - 1] }); // Pass the orders to the template
+        
     } catch (error) {
         console.error(error);
         req.flash('error', 'Unable to fetch your orders.');
