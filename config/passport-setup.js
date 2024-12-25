@@ -5,7 +5,27 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto'); // To generate unique tokens
 const nodemailer = require('nodemailer'); // For sending emails
+const dns = require('dns'); // To validate email domain
 
+// Helper function to validate email format
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Helper function to validate email domain
+async function isValidDomain(email) {
+    const domain = email.split('@')[1];
+    return new Promise((resolve) => {
+        dns.resolveMx(domain, (err, addresses) => {
+            if (err || addresses.length === 0) {
+                resolve(false);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
 
 // Serialize user instance to the session
 passport.serializeUser((user, done) => {
@@ -30,6 +50,17 @@ passport.use('local.signup', new localStrategy({
 }, async (req, email, password, done) => {
     if (req.body.password !== req.body.confirm_password) {
         return done(null, false, req.flash('error', 'Passwords do not match'));
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+        return done(null, false, req.flash('error', 'Invalid email format.'));
+    }
+
+    // Validate email domain
+    const isDomainValid = await isValidDomain(email);
+    if (!isDomainValid) {
+        return done(null, false, req.flash('error', 'Email domain is invalid.'));
     }
 
     try {
