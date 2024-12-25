@@ -3,13 +3,13 @@
         <%- include('../partails/flashMessageLogin') -%>
 
             <div class="container my-5">
-                <h2 class="text-center mb-4 text-primary"><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h2>
+                <h2 class="text-center mb-4 text-success"><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h2>
 
                 <div class="card shadow-lg rounded-3">
                     <div class="card-body p-4">
 
                         <table class="table table-striped table-bordered align-middle mb-0">
-                            <thead class="table-dark">
+                            <thead class="table-success">
                                 <tr>
                                     <th>Product</th>
                                     <th>Quantity</th>
@@ -34,13 +34,13 @@
                                                 <td>
                                                     <div class="d-flex justify-content-center">
                                                         <a href="/cart/decrease?id=<%= item.product_id %>"
-                                                            class="btn btn-outline-secondary btn-sm mx-1"><i
+                                                            class="btn btn-outline-dark btn-sm mx-1"><i
                                                                 class="fas fa-minus"></i></a>
                                                         <span class="mx-2">
                                                             <%= item.quantity %>
                                                         </span>
                                                         <a href="/cart/increase?id=<%= item.product_id %>"
-                                                            class="btn btn-outline-secondary btn-sm mx-1"><i
+                                                            class="btn btn-outline-dark btn-sm mx-1"><i
                                                                 class="fas fa-plus"></i></a>
                                                     </div>
                                                 </td>
@@ -94,3 +94,76 @@
             </div>
 
             <%- include('../partails/footer') -%>
+
+                <style>
+                    /* Custom button design for the cart page */
+                    .btn-outline-dark {
+                        border: 2px solid #004d00;
+                        /* Dark green border */
+                        color: #004d00;
+                        font-weight: bold;
+                        transition: background-color 0.3s, color 0.3s;
+                    }
+
+                    .btn-outline-dark:hover {
+                        background-color: #004d00;
+                        color: white;
+                    }
+
+                    .btn-outline-danger {
+                        border: 2px solid #dc3545;
+                        color: #dc3545;
+                        font-weight: bold;
+                        transition: background-color 0.3s, color 0.3s;
+                    }
+
+                    .btn-outline-danger:hover {
+                        background-color: #dc3545;
+                        color: white;
+                    }
+
+                    /* Table and header style */
+                    .table-success {
+                        background-color: #28a745 !important;
+                        color: white;
+                    }
+
+                    /* Card Style */
+                    .card {
+                        border: 1px solid #e0e0e0;
+                        border-radius: 15px;
+                        transition: box-shadow 0.3s ease;
+                    }
+
+                    .card-body {
+                        padding: 20px;
+                        background-color: #f8f9fa;
+                    }
+
+                    .card:hover {
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                    }
+
+                    /* Table Styling */
+                    .table-bordered {
+                        border: 1px solid #ddd;
+                    }
+
+                    .table-striped tbody tr:nth-of-type(odd) {
+                        background-color: #f9f9f9;
+                    }
+
+                    .table-dark th {
+                        background-color: #343a40;
+                        color: white;
+                    }
+
+                    /* Styling for empty cart message */
+                    .table-light {
+                        background-color: #f1f1f1;
+                    }
+
+                    .text-muted {
+                        font-size: 0.9rem;
+                    }
+                </style>

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
     <div class="container-fluid">
         <div class="logo"></div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -71,7 +71,9 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="/users/logout">Logout</a></li>
+                                    <li><a href="/users/logout" class="dropdown-item text-danger">
+                                            <i class="fas fa-sign-out-alt"></i> Logout
+                                        </a></li>
                                 </ul>
                             </li>
                             <% }} %>
@@ -101,7 +103,7 @@
     }
 
     .navbar-nav .nav-link:hover {
-        color: #007bff;
+        color: #06d873;
         /* Blue color on hover */
         transform: scale(1.008);
     }
@@ -186,7 +188,7 @@
 
     .form-control:focus {
         background-color: #e9ecef;
-        border-color: #007bff;
+        border-color: #1b460a;
     }
 
     .btn-outline-success {
@@ -198,5 +200,10 @@
 
     .btn-outline-success:hover {
         background-color: #218838;
+    }
+
+    body {
+        padding-top: 65px;
+        /* Adjust to the height of your navbar */
     }
 </style>
