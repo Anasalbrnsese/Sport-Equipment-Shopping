@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css"> <!-- Your custom styles -->
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <a href="#">Admin Dashboard</a>
+            </div>
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#users-tab" id="users-tab">
+                        <i class="fas fa-users"></i> Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#orders-tab" id="orders-tab">
+                        <i class="fas fa-box"></i> Orders
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#feedback-tab" id="feedback-tab">
+                        <i class="fas fa-comments"></i> Feedback
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Dashboard</a>
+            </nav>
+            <div class="content">
+                <!-- Overview Section -->
+                <section class="overview">
+                    <h2>Overview</h2>
+                    <div class="overview-stats">
+                        <div class="stat">
+                            <h3>Users</h3>
+                            <p>
+                                <%= users.length %>
+                            </p>
+                        </div>
+                        <div class="stat">
+                            <h3>Products</h3>
+                            <p>
+                                <%= products.length %>
+                            </p>
+                        </div>
+                        <div class="stat">
+                            <h3>Orders</h3>
+                            <p>
+                                <%= orders.length %>
+                            </p>
+                        </div>
+                        <div class="stat">
+                            <h3>Feedback</h3>
+                            <p>
+                                <%= feedback.length %>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Details Sections -->
+                <section class="details">
+                    <!-- Users Section -->
+                    <div id="users-section" class="details-section">
+                        <h2>Users</h2>
+                        <ul>
+                            <% users.forEach(user=> { %>
+                                <li>
+                                    <%= user.name %> - <%= user.email %>
+                                </li>
+                                <% }); %>
+                        </ul>
+                    </div>
+
+                    <!-- Orders Section -->
+                    <div id="orders-section" class="details-section" style="display: none;">
+                        <h2>Orders</h2>
+                        <ul>
+                            <% orders.forEach(order=> { %>
+                                <li>Order #<%= order.id %>: <%= order.status %>
+                                </li>
+                                <% }); %>
+                        </ul>
+                    </div>
+
+                    <!-- Feedback Section -->
+                    <div id="feedback-section" class="details-section" style="display: none;">
+                        <h2>Feedback</h2>
+                        <ul>
+                            <% feedback.forEach(fb=> { %>
+                                <li>
+                                    <strong>Order:</strong> #<%= fb.orderId.id %> <br>
+                                        <strong>User:</strong>
+                                        <%= fb.userId.name %> (<%= fb.userId.email %>) <br>
+                                                <strong>Phone:</strong>
+                                                <%= fb.userId.phone %> <br>
+                                                    <strong>Rating:</strong>
+                                                    <%= fb.rating %>/5 <br>
+                                                        <strong>Comment:</strong>
+                                                        <%= fb.comment %> <br>
+                                                            <strong>Submitted:</strong>
+                                                            <%= fb.createdAt.toLocaleString() %>
+                                </li>
+                                <% }); %>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

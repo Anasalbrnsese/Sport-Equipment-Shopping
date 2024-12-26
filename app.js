@@ -17,6 +17,7 @@ const passportSetup = require('./config/passport-setup');
 const favicon = require('serve-favicon');
 const path = require('path');
 const feedbackRoutes = require('./routes/feedback');
+const adminDashboardRoute = require('./routes/admin-dashboard');
 
 const mongodbStore = new mongodbSession({
     uri: 'mongodb://localhost:27017/productdb',
@@ -90,6 +91,7 @@ app.use('/admin/categories', adminCategories);
 app.use('/orders', orders);
 app.use('/users', users);
 app.use('/feedback', feedbackRoutes);
+app.use('/admin', adminDashboardRoute);
 
 
 //bring icon image with path ico

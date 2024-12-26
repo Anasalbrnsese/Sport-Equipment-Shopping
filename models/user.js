@@ -18,9 +18,10 @@ const userSchema = mongoose.Schema({
     googleId: { type: String },
     role: {
         type: String,
-        enum: ['merchant', 'user'],
-        default: 'user' // افتراضيًا سيكون المستخدم العادي
+        enum: ['merchant', 'user', 'admin'], // Add 'admin' to the allowed roles
+        default: 'user' // Default to 'user'
     },
+
     avatar: {
         type: String,
         required: false
