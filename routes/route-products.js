@@ -17,7 +17,7 @@ const isMerchant = (req, res, next) => {
     if (req.user.role === 'merchant') {
         return next();
     }
-    req.flash('error', 'ليس لديك الصلاحيات لإضافة منتجات.');
+    req.flash('error', 'You do not have permission to add products.');
     res.redirect('/product'); // إعادة توجيه المستخدم إلى صفحة المنتجات
 };
 // مسار العرض الأولي للمنتجات
