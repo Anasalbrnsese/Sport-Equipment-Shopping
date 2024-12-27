@@ -35,69 +35,96 @@
                         <div class="card overflow-hidden mb-4"
                             style="border-radius:15px; background: #f8f9fa; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
                             <div class="card-body">
-                                <!-- Change Password Form -->
-                                <form action="/users/changePassword" method="POST">
-                                    <h5 class="font-weight-bold text-success">Change Password</h5>
-                                    <div class="form-group">
-                                        <label class="form-label">Current Password</label>
-                                        <input type="password" class="form-control custom-input" name="currentPassword"
-                                            required>
+                                <!-- Add this inside the right column or wherever you'd like the button to appear -->
+                                <% if (User && User.role==='admin' ) { %>
+                                    <div class="text-center mt-4">
+                                        <a href="/admin/dashboard" class="btn btn-outline-success custom-btn-admin">
+                                            Go to Admin Dashboard
+                                        </a>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="form-label">New Password</label>
-                                        <input type="password" class="form-control custom-input" name="newPassword"
-                                            required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Confirm New Password</label>
-                                        <input type="password" class="form-control custom-input" name="confirmPassword"
-                                            required>
-                                    </div>
-                                    <button type="submit" class="btn btn-success mt-4 custom-btn-save">Change
-                                        Password</button>
-                                </form>
+                                    <% } %>
+                                        <style>
+                                            .custom-btn-admin {
+                                                font-size: 16px;
+                                                padding: 12px 30px;
+                                                border-radius: 50px;
+                                                background-color: #fff;
+                                                border: 2px solid #28a745;
+                                                color: #28a745;
+                                                transition: all 0.3s ease;
+                                            }
 
-                                <hr class="my-4">
-
-                                <!-- General Information Form -->
-                                <form action="/users/updateProfile" method="POST">
-                                    <h5 class="font-weight-bold text-success">General Information</h5>
-                                    <div class="form-group">
-                                        <label class="form-label">Username</label>
-                                        <input type="text" class="form-control custom-input mb-1" name="username"
-                                            value="<%= User ? User.name : '' %>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">Name</label>
-                                        <input type="text" class="form-control custom-input" name="name"
-                                            value="<%= User ? User.name : '' %>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">E-mail</label>
-                                        <input type="text" id="email" class="form-control custom-input" name="email"
-                                            value="<%= User ? User.email : '' %>" disabled>
-                                        <% if(User.isVerified==false){ %>
-                                            <div class="alert alert-warning mt-3">
-                                                Your email is not confirmed. Please check your inbox.<br>
-                                                <a href="javascript:void(0)">Resend confirmation</a>
+                                            .custom-btn-admin:hover {
+                                                background-color: #28a745;
+                                                color: #fff;
+                                                transform: scale(1.05);
+                                                cursor: pointer;
+                                            }
+                                        </style>
+                                        <!-- Change Password Form -->
+                                        <form action="/users/changePassword" method="POST">
+                                            <h5 class="font-weight-bold text-success">Change Password</h5>
+                                            <div class="form-group">
+                                                <label class="form-label">Current Password</label>
+                                                <input type="password" class="form-control custom-input"
+                                                    name="currentPassword" required>
                                             </div>
-                                            <% } %>
-                                    </div>
-                                </form>
+                                            <div class="form-group">
+                                                <label class="form-label">New Password</label>
+                                                <input type="password" class="form-control custom-input"
+                                                    name="newPassword" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Confirm New Password</label>
+                                                <input type="password" class="form-control custom-input"
+                                                    name="confirmPassword" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-success mt-4 custom-btn-save">Change
+                                                Password</button>
+                                        </form>
 
-                                <hr class="my-4">
+                                        <hr class="my-4">
 
-                                <!-- Change Phone Number Form -->
-                                <form action="/users/updatePhone" method="POST">
-                                    <h5 class="font-weight-bold text-success">Change Phone Number</h5>
-                                    <div class="form-group">
-                                        <label class="form-label">Phone Number</label>
-                                        <input type="text" class="form-control custom-input" name="phone"
-                                            placeholder="+962XXXXXXXXX" value="<%= User ? User.phone : '' %>">
-                                    </div>
-                                    <button type="submit" class="btn btn-success mt-4 custom-btn-save">Save Phone
-                                        Number</button>
-                                </form>
+                                        <!-- General Information Form -->
+                                        <form action="/users/updateProfile" method="POST">
+                                            <h5 class="font-weight-bold text-success">General Information</h5>
+                                            <div class="form-group">
+                                                <label class="form-label">Role</label>
+                                                <input type="text" class="form-control custom-input mb-1"
+                                                    name="username" value="<%= User ? User.role : '' %>" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Name</label>
+                                                <input type="text" class="form-control custom-input" name="name"
+                                                    value="<%= User ? User.name : '' %>" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">E-mail</label>
+                                                <input type="text" id="email" class="form-control custom-input"
+                                                    name="email" value="<%= User ? User.email : '' %>" disabled>
+                                                <% if(User.isVerified==false){ %>
+                                                    <div class="alert alert-warning mt-3">
+                                                        Your email is not confirmed. Please check your inbox.<br>
+                                                        <a href="javascript:void(0)">Resend confirmation</a>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                        </form>
+
+                                        <hr class="my-4">
+
+                                        <!-- Change Phone Number Form -->
+                                        <form action="/users/updatePhone" method="POST">
+                                            <h5 class="font-weight-bold text-success">Change Phone Number</h5>
+                                            <div class="form-group">
+                                                <label class="form-label">Phone Number</label>
+                                                <input type="text" class="form-control custom-input" name="phone"
+                                                    placeholder="+962XXXXXXXXX" value="<%= User ? User.phone : '' %>">
+                                            </div>
+                                            <button type="submit" class="btn btn-success mt-4 custom-btn-save">Save
+                                                Phone
+                                                Number</button>
+                                        </form>
                             </div>
                         </div>
                     </div>

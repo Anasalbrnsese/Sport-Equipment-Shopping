@@ -5,13 +5,13 @@ const Product = require('../models/products'); // Assume Product schema exists
 const Order = require('../models/order'); // Assume Order schema exists
 const User = require('../models/user'); // Assume User schema exists
 const Feedback = require('../models/feedback'); // Assume Feedback schema exists
-const { ensureAdmin } = require('../middlewares/auth');
+const { isAdmin } = require('../middlewares/auth');
 
 // Middleware to ensure only admins can access
-router.use(ensureAdmin);
+router.use(isAdmin);
 
 // Dashboard Route
-router.get('/dashboard', ensureAdmin, async (req, res) => {
+router.get('/dashboard', isAdmin, async (req, res) => {
     try {
         const users = await User.find();
         const orders = await Order.find();

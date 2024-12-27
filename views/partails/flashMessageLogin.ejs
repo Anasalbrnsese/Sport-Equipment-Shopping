@@ -4,19 +4,18 @@
             icon: 'success',
             title: '<%= success %>',
             showConfirmButton: false,
-            timer: 2000 
+            timer: 2000
         });
     </script>
     <% } %>
 
-
-        <% if (locals.error && error !="" ) { %>
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: '<%= error %>',
-                    showConfirmButton: false,
-                    timer: 2000 
-                });
-            </script>
-            <% } %>
+                <% if (locals.error && error !="" ) { %>
+                    <script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: '<%= error %>',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    </script>
+                    <% } %>

@@ -77,7 +77,7 @@
                                             <button class="btn btn-green btn-lg px-5 py-3 fs-5 w-100" type="submit">Add
                                                 to Cart</button>
                                         </form>
-                                        <% if (User && User.role==='merchant' ) { %>
+                                        <% if (User && (User.role==='merchant' || User.role==='admin' )) { %>
                                             <div
                                                 class="btn btn-outline-green px-5 py-3 fs-5 w-100 d-flex justify-content-between mt-3">
                                                 <!-- Edit Button -->

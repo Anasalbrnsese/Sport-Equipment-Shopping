@@ -1,14 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Product = require('../models/products');
-const { error } = require("jquery");
+const { isAuthenticated } = require('../middlewares/auth');
 
 
-let isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) return next();
-    req.flash('error', 'You must have an account to create your shopping cart!');
-    res.redirect('/users/login');
-};
 router.post('/add_cart', isAuthenticated, (req, res) => {
     const { product_id, imageProduct, product_name, product_price, quantity } = req.body;
 

@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Feedback = require('../models/feedback'); // Assuming you have a Feedback model
-// Handle feedback submission
-const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) return next()
-    res.redirect('/users/login')
-};
+const { isAuthenticated } = require('../middlewares/auth');
+
 router.post('/submit', isAuthenticated, async (req, res) => {
     try {
         const { orderId, rating, comment } = req.body;

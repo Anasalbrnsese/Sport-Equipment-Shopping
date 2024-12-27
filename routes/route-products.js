@@ -2,24 +2,10 @@ const express = require("express");
 const router = express.Router();
 const Product = require('../models/products');
 const { check, validationResult } = require('express-validator');
-const { error } = require("jquery");
 const Category = require('../models/category');
-const Order = require('../models/order'); // Adjust the path as needed
+const { isAdminOrMerchant, isAuthenticated } = require('../middlewares/auth');
 
 
-// to check if user is loogged in 
-const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) return next()
-    res.redirect('/users/login')
-};
-
-const isMerchant = (req, res, next) => {
-    if (req.user.role === 'merchant') {
-        return next();
-    }
-    req.flash('error', 'You do not have permission to add products.');
-    res.redirect('/product'); // إعادة توجيه المستخدم إلى صفحة المنتجات
-};
 // مسار العرض الأولي للمنتجات
 router.get('/', async (req, res) => {
     try {
@@ -128,7 +114,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get('/createProduct', isAuthenticated, isMerchant, async (req, res) => {
+router.get('/createProduct', isAuthenticated, isAdminOrMerchant, async (req, res) => {
     try {
         const categories = await Category.find(); // Fetch all categories from the database
         res.render('layout/createProduct', {
@@ -140,7 +126,7 @@ router.get('/createProduct', isAuthenticated, isMerchant, async (req, res) => {
         res.status(500).send('Error fetching categories');
     }
 });
-router.post('/createProduct', upload.single('image'), [
+router.post('/createProduct', isAdminOrMerchant, upload.single('image'), [
     check('title').notEmpty().withMessage('Title is required'),
     check('price').isNumeric().withMessage('Price must be a number'),
     check('description').notEmpty().withMessage('Description is required'),
@@ -194,7 +180,7 @@ router.get('/:id', async (req, res) => {
 
 
 // Route to render the edit product form
-router.get('/edit/:id', isAuthenticated, isMerchant, async (req, res) => {
+router.get('/edit/:id', isAuthenticated, isAdminOrMerchant, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         const categories = await Category.find();
@@ -214,7 +200,7 @@ router.get('/edit/:id', isAuthenticated, isMerchant, async (req, res) => {
 });
 
 // Route to handle product edit submission
-router.post('/edit/:id', upload.single('image'), [
+router.post('/edit/:id', isAuthenticated, isAdminOrMerchant, upload.single('image'), [
     check('title').notEmpty().withMessage('Title is required'),
     check('price').isNumeric().withMessage('Price must be a number'),
     check('description').notEmpty().withMessage('Description is required'),
@@ -253,7 +239,7 @@ router.post('/edit/:id', upload.single('image'), [
 
 
 // Route to delete a product
-router.post('/delete/:id', isAuthenticated, isMerchant, async (req, res) => {
+router.post('/delete/:id', isAuthenticated, isAdminOrMerchant, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         if (!product) {

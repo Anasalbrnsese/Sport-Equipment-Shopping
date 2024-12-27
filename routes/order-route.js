@@ -4,22 +4,12 @@ const router = express.Router();
 const Order = require('../models/order');
 const Product = require('../models/products');
 const User = require('../models/user');
+const { isAdminOrMerchant } = require('../middlewares/auth');
+const { isAuthenticated } = require('../middlewares/auth');
 
-// to check if user is loogged in 
-const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) return next()
-    res.redirect('/users/login')
-};
 
-const isMerchant = (req, res, next) => {
-    if (req.user.role === 'merchant') {
-        return next();
-    }
-    req.flash('error', 'ليس لديك الصلاحيات لإضافة منتجات.');
-    res.redirect('/product'); // إعادة توجيه المستخدم إلى صفحة المنتجات
-};
 
-router.post('/confirm-order', async (req, res) => {
+router.post('/confirm-order', isAuthenticated, async (req, res) => {
     try {
         // Get the user ID from the authenticated user
         const userId = req.user._id;  // This assumes req.user is set via authentication middleware
@@ -35,7 +25,7 @@ router.post('/confirm-order', async (req, res) => {
         }
         // Check if the phone number is provided
         if (!user.phone) {
-            req.flash('error', 'Please provide a phone number!'); 
+            req.flash('error', 'Please provide a phone number!');
             return res.redirect('/users/profile');
         }
         let totalPrice = 0;
@@ -82,7 +72,7 @@ router.post('/confirm-order', async (req, res) => {
         req.session.cart = [];
         // Clear the cart
         await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
-        
+
         // Redirect to the order details page
         req.flash('success', 'Your order has been placed successfully!');
         res.redirect(`/orders/order-details/${newOrder._id}`);
@@ -114,7 +104,7 @@ router.get('/lastOrder', async (req, res) => {
     try {
         const lastOrder = await Order.findOne().sort({ createdAt: -1 }); // Sort by newest
         res.render('layout/order-details', { lastOrder: lastOrder });
-        
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');
@@ -127,7 +117,7 @@ router.get('/all-orders-user', isAuthenticated, async (req, res) => {
         // Fetch all orders for the logged-in user
         const orders = await Order.find({ userId: req.user._id }); // Assuming userId is stored in Order
         res.render('layout/all-orders-user', { orders, lastOrder: orders[orders.length - 1] }); // Pass the orders to the template
-        
+
     } catch (error) {
         console.error(error);
         req.flash('error', 'Unable to fetch your orders.');
@@ -135,7 +125,7 @@ router.get('/all-orders-user', isAuthenticated, async (req, res) => {
     }
 });
 // Route to fetch all orders
-router.get('/all_orders', isAuthenticated, isMerchant, async (req, res) => {
+router.get('/all_orders', isAuthenticated, isAdminOrMerchant, async (req, res) => {
     try {
         const orders = await Order.find(); // Fetch all orders from the database
         res.render('layout/all_orders', { orders }); // Pass the orders to the template
@@ -144,7 +134,7 @@ router.get('/all_orders', isAuthenticated, isMerchant, async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
-router.post('/update-status', isAuthenticated, isMerchant, async (req, res) => {
+router.post('/update-status', isAuthenticated, isAdminOrMerchant, async (req, res) => {
     try {
         const { orderId, newStatus } = req.body;
 

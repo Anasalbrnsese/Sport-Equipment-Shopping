@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-// Get Category model
 const Category = require('../models/category');
+const { isAdminOrMerchant } = require('../middlewares/auth');
 
-router.get('/', async (req, res) => {
+router.get('/', isAdminOrMerchant, async (req, res) => {
     try {
         const categories = await Category.find();
         res.render('admin/categories', {
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 // Route to render the Add Category form
-router.get('/add-category', (req, res) => {
+router.get('/add-category', isAdminOrMerchant, async (req, res) => {
     res.render('admin/add_category', {
         title: '', // Default empty values for form fields
         slug: '',
@@ -25,7 +25,7 @@ router.get('/add-category', (req, res) => {
 });
 
 // Route to handle form submission
-router.post('/add-category', async (req, res) => {
+router.post('/add-category', isAdminOrMerchant, async (req, res) => {
     try {
         const { title, slug, content } = req.body;
 
@@ -44,7 +44,7 @@ router.post('/add-category', async (req, res) => {
     }
 });
 // Route to handle deleting a category
-router.get('/delete-category/:id', async (req, res) => {
+router.get('/delete-category/:id', isAdminOrMerchant, async (req, res) => {
     try {
         // Find the category by ID and delete it
         await Category.findByIdAndDelete(req.params.id);
@@ -57,7 +57,7 @@ router.get('/delete-category/:id', async (req, res) => {
     }
 });
 // Route to render the Edit Category form
-router.get('/edit-category/:slug', async (req, res) => {
+router.get('/edit-category/:slug', isAdminOrMerchant, async (req, res) => {
     try {
         // Find the category by slug
         const category = await Category.findOne({ slug: req.params.slug });
@@ -79,7 +79,7 @@ router.get('/edit-category/:slug', async (req, res) => {
 });
 
 // Route to handle updating the category
-router.post('/edit-category/:slug', async (req, res) => {
+router.post('/edit-category/:slug', isAdminOrMerchant, async (req, res) => {
     try {
         const { title, slug, content } = req.body;
 
@@ -96,7 +96,7 @@ router.post('/edit-category/:slug', async (req, res) => {
         console.log(err);
         res.status(500).send("Server Error");
     }
-}); 
+});
 
 
 module.exports = router;
