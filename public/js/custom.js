@@ -18,3 +18,23 @@ window.addEventListener('scroll', animateOnScroll);
 
 // Run on load in case some cards are initially in view
 window.addEventListener('load', animateOnScroll);
+
+
+let btnUp = document.querySelector("#UP");
+window.onscroll = function () {
+    if (window.scrollY >= 600) {
+        // console.log(`scrolling Y is ${window.scrollY}`)
+        btnUp.style.display = "block";
+    }
+    else {
+        btnUp.style.display = "none";
+    }
+};
+
+btnUp.onclick = function () {
+    window.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: "smooth",
+    });
+};
