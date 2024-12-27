@@ -1,11 +1,11 @@
 <%- include('../partails/header') -%>
     <%- include('../partails/navbar') -%>
-    
+
         <div class="container mt-5">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-8 col-md-10">
-                    <div class="card shadow-lg border-0">
-                        <div class="card-header bg-primary text-white text-center">
+                    <div class="card shadow-lg border-0 rounded-3">
+                        <div class="card-header bg-success text-white text-center">
                             <h2 class="mb-0"><i class="fas fa-edit me-2"></i> Edit Product</h2>
                         </div>
                         <div class="card-body">
@@ -18,35 +18,44 @@
                                     <% }) %>
                                         <% } %>
 
+                                            <!-- Form for editing the product -->
                                             <form action="/product/edit/<%= product._id %>" method="post"
                                                 enctype="multipart/form-data" class="needs-validation">
+                                                <!-- Image Upload -->
                                                 <div class="mb-4">
                                                     <label for="image" class="form-label"><i
                                                             class="fas fa-image me-2"></i> Product Image</label>
-                                                    <input type="file" name="image" id="image" class="form-control">
+                                                    <input type="file" name="image" id="image"
+                                                        class="form-control shadow-sm">
                                                     <div class="form-text">Current Image: <img
                                                             src="<%= product.imageProduct %>" alt="Current Image"
                                                             width="100"></div>
                                                 </div>
 
+                                                <!-- Product Title -->
                                                 <div class="mb-4">
                                                     <label for="title" class="form-label"><i
                                                             class="fas fa-tag me-2"></i> Product Title</label>
-                                                    <input type="text" name="title" id="title" class="form-control"
+                                                    <input type="text" name="title" id="title"
+                                                        class="form-control shadow-sm"
                                                         value="<%= product.titleProduct %>" required>
                                                 </div>
 
+                                                <!-- Product Price -->
                                                 <div class="mb-4">
                                                     <label for="price" class="form-label"><i
                                                             class="fas fa-dollar-sign me-2"></i> Product Price</label>
-                                                    <input type="text" name="price" id="price" class="form-control"
+                                                    <input type="text" name="price" id="price"
+                                                        class="form-control shadow-sm"
                                                         value="<%= product.priceProduct %>" required>
                                                 </div>
 
+                                                <!-- Product Category -->
                                                 <div class="mb-4">
                                                     <label for="category" class="form-label"><i
                                                             class="fas fa-list-alt me-2"></i> Product Category</label>
-                                                    <select name="category" id="category" class="form-select" required>
+                                                    <select name="category" id="category" class="form-select shadow-sm"
+                                                        required>
                                                         <% categories.forEach(function (cat) { %>
                                                             <option value="<%= cat._id %>" <%=cat._id==product.category
                                                                 ? 'selected' : '' %>>
@@ -56,16 +65,19 @@
                                                     </select>
                                                 </div>
 
+                                                <!-- Product Description -->
                                                 <div class="mb-4">
                                                     <label for="description" class="form-label"><i
                                                             class="fas fa-info-circle me-2"></i> Product
                                                         Description</label>
-                                                    <textarea name="description" id="description" class="form-control"
-                                                        rows="4" required><%= product.descriptionProduct %></textarea>
+                                                    <textarea name="description" id="description"
+                                                        class="form-control shadow-sm" rows="4"
+                                                        required><%= product.descriptionProduct %></textarea>
                                                 </div>
 
+                                                <!-- Submit Button -->
                                                 <div class="text-center">
-                                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                                    <button type="submit" class="btn btn-success btn-lg px-5">
                                                         <i class="fas fa-save me-2"></i> Save Changes
                                                     </button>
                                                 </div>
@@ -75,4 +87,65 @@
                 </div>
             </div>
         </div>
+
         <%- include('../partails/footer') -%>
+
+            <style>
+                .card {
+                    border-radius: 15px;
+                    /* Add rounded corners to the card */
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    /* Subtle shadow for depth */
+                }
+
+                .card-header {
+                    background-color: #14ff39;
+                    /* Green color for consistency */
+                    border-radius: 15px 15px 0 0;
+                }
+
+                .card-body {
+                    background-color: #f8f9fa;
+                    /* Light background for the body */
+                }
+
+                .form-control,
+                .form-select {
+                    border-radius: 10px;
+                    /* Rounded form controls */
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    /* Light shadow on form inputs */
+                }
+
+                .form-control:focus,
+                .form-select:focus {
+                    box-shadow: 0 0 10px rgba(0, 204, 0, 0.5);
+                    /* Focus effect */
+                    border-color: #14ff39;
+                    /* Green border when focused */
+                }
+
+                .btn-success {
+                    border-radius: 25px;
+                    /* Rounded button */
+                    transition: background-color 0.3s ease;
+                }
+
+                .btn-success:hover {
+                    background-color: #128c34;
+                    /* Darker green on hover */
+                }
+
+                .form-text {
+                    font-size: 0.9rem;
+                    color: #6c757d;
+                    /* Gray color for form help text */
+                }
+
+                .alert-danger {
+                    background-color: #f8d7da;
+                    /* Light red background for error messages */
+                    border-color: #f5c6cb;
+                    /* Red border for error messages */
+                }
+            </style>

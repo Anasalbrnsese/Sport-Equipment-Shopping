@@ -3,8 +3,8 @@
         <div class="container mt-5">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-8 col-md-10">
-                    <div class="card shadow-lg border-0">
-                        <div class="card-header bg-primary text-white text-center">
+                    <div class="card shadow-lg border-0 rounded-3">
+                        <div class="card-header bg-success text-white text-center">
                             <h2 class="mb-0"><i class="fas fa-plus-circle me-2"></i> Add New Product</h2>
                         </div>
                         <div class="card-body">
@@ -25,8 +25,8 @@
                                                     <label for="image" class="form-label">
                                                         <i class="fas fa-image me-2"></i> Product Image
                                                     </label>
-                                                    <input type="file" name="image" id="image" class="form-control"
-                                                        required>
+                                                    <input type="file" name="image" id="image"
+                                                        class="form-control shadow-sm" required>
                                                     <div class="form-text">Upload a high-quality image of the product.
                                                     </div>
                                                 </div>
@@ -36,8 +36,9 @@
                                                     <label for="title" class="form-label">
                                                         <i class="fas fa-tag me-2"></i> Product Title
                                                     </label>
-                                                    <input type="text" name="title" id="title" class="form-control"
-                                                        placeholder="Enter product title" required>
+                                                    <input type="text" name="title" id="title"
+                                                        class="form-control shadow-sm" placeholder="Enter product title"
+                                                        required>
                                                 </div>
 
                                                 <!-- Price -->
@@ -45,8 +46,9 @@
                                                     <label for="price" class="form-label">
                                                         <i class="fas fa-dollar-sign me-2"></i> Product Price
                                                     </label>
-                                                    <input type="text" name="price" id="price" class="form-control"
-                                                        placeholder="Enter product price" required>
+                                                    <input type="text" name="price" id="price"
+                                                        class="form-control shadow-sm" placeholder="Enter product price"
+                                                        required>
                                                 </div>
 
                                                 <!-- Category -->
@@ -54,7 +56,8 @@
                                                     <label for="category" class="form-label">
                                                         <i class="fas fa-list-alt me-2"></i> Product Category
                                                     </label>
-                                                    <select name="category" id="category" class="form-select" required>
+                                                    <select name="category" id="category" class="form-select shadow-sm"
+                                                        required>
                                                         <option value="" disabled selected>Select Category</option>
                                                         <% categories.forEach(function(cat) { %>
                                                             <option value="<%= cat._id %>">
@@ -69,14 +72,14 @@
                                                     <label for="description" class="form-label">
                                                         <i class="fas fa-info-circle me-2"></i> Product Description
                                                     </label>
-                                                    <textarea name="description" id="description" class="form-control"
-                                                        rows="4" placeholder="Describe your product"
-                                                        required></textarea>
+                                                    <textarea name="description" id="description"
+                                                        class="form-control shadow-sm" rows="4"
+                                                        placeholder="Describe your product" required></textarea>
                                                 </div>
 
                                                 <!-- Submit Button -->
                                                 <div class="text-center">
-                                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                                    <button type="submit" class="btn btn-success btn-lg px-5">
                                                         <i class="fas fa-save me-2"></i> Save Product
                                                     </button>
                                                 </div>
@@ -87,3 +90,63 @@
             </div>
         </div>
         <%- include('../partails/footer') -%>
+
+            <style>
+                .card {
+                    border-radius: 15px;
+                    /* Add rounded corners to the card */
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    /* Subtle card shadow */
+                }
+
+                .card-header {
+                    background-color: #14ff39;
+                    /* Use green color for consistency */
+                    border-radius: 15px 15px 0 0;
+                }
+
+                .card-body {
+                    background-color: #f8f9fa;
+                    /* Light background for content */
+                }
+
+                .form-control,
+                .form-select {
+                    border-radius: 10px;
+                    /* Rounded form controls */
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    /* Add a light shadow to the inputs */
+                }
+
+                .form-control:focus,
+                .form-select:focus {
+                    box-shadow: 0 0 10px rgba(0, 204, 0, 0.5);
+                    /* Focus effect */
+                    border-color: #14ff39;
+                    /* Green border on focus */
+                }
+
+                .btn-success {
+                    border-radius: 25px;
+                    /* Rounded button */
+                    transition: background-color 0.3s ease;
+                }
+
+                .btn-success:hover {
+                    background-color: #128c34;
+                    /* Darker green on hover */
+                }
+
+                .form-text {
+                    font-size: 0.9rem;
+                    color: #6c757d;
+                    /* Gray color for form help text */
+                }
+
+                .alert-danger {
+                    background-color: #f8d7da;
+                    /* Light red background for error messages */
+                    border-color: #f5c6cb;
+                    /* Red border for error messages */
+                }
+            </style>

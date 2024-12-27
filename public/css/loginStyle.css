@@ -33,7 +33,7 @@ body{
     }
 
     .container-login button {
-        background-color: #0055ff;
+        background: linear-gradient(288deg, #14ff39, #247219);
         color: #fff;
         font-size: 12px;
         padding: 10px 45px;
@@ -133,19 +133,6 @@ body{
     letter-spacing: 10px;
     color: red;
 }
-.social-icons .iconSignup::after{
-    content: "Sign-up With Email";
-    letter-spacing: 0px;
-    color: #070606;
-    font-weight: bold;
-}
-
-.social-icons .iconSignin::after{
-    content: "Sign-in With Email";
-    letter-spacing: 0px;
-    color: #070606;
-    font-weight: bold;
-}
 
 .toggle-container-login {
     position: absolute;
@@ -165,9 +152,9 @@ body{
 }
 
 .toggle{
-    background-color: #0055ff;
+    background-color: #00ff04;
     height: 100%;
-    background: linear-gradient(288deg, #0055ff, #043873);
+    background: linear-gradient(288deg, #1c6f21, #043873);
     color: #fff;
     position: relative;
     left: -100%;
