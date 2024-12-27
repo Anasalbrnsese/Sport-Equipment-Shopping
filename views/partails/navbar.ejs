@@ -28,11 +28,16 @@
                                         <a class="nav-link" href="/orders/all_orders">Manage All Orders</a>
                                     </li>
                                     <% } %>
-                                        <% if(User){ %>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="/orders/all-orders-user">My Orders</a>
-                                            </li>
-                                            <% } %>
+                                        <!-- New Links -->
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/infoAAR/services">Services</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/infoAAR/contact">Contact</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="/infoAAR/about">About Us</a>
+                                        </li>
 
             </ul>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 me-lg-4">
@@ -67,24 +72,34 @@
                                     <%= User ? User.name : 'Guest' %>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/users/profile">Profile</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
                                     <li>
-                                        <hr class="dropdown-divider">
+                                        <a class="dropdown-item nav-item" href="/users/profile"><i
+                                                class="fa fa-user"></i>Profile</a>
                                     </li>
-                                    <li><a href="/users/logout" class="dropdown-item text-danger">
-                                            <i class="fas fa-sign-out-alt"></i> Logout
-                                        </a></li>
-                                </ul>
-                            </li>
-                            <% }} %>
-            </ul>
 
-            <form method="GET" action="/product/search" class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search"
-                    value="<%= typeof search !== 'undefined' ? search : '' %>">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+                                    <% if(User){ %>
+                                        <li>
+                                            <a class="dropdown-item nav-item" href="/orders/all-orders-user">
+                                                <i class="fa fa-box"></i> Your Orders
+                                            </a>
+                                        </li>
+                                        <% } %>
+
+                                            <hr class="dropdown-divider">
+                            </li>
+                            <li><a href="/users/logout" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a></li>
+            </ul>
+            </li>
+            <% }} %>
+                </ul>
+
+                <form method="GET" action="/product/search" class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                        name="search" value="<%= typeof search !== 'undefined' ? search : '' %>">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
 
         </div>
     </div>

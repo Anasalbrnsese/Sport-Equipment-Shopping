@@ -18,7 +18,7 @@ const favicon = require('serve-favicon');
 const path = require('path');
 const feedbackRoutes = require('./routes/feedback');
 const adminDashboardRoute = require('./routes/admin-dashboard');
-
+const infoAARRoutes = require('./routes/infoAAR');
 const mongodbStore = new mongodbSession({
     uri: 'mongodb://localhost:27017/productdb',
     collection: 'sessions',
@@ -35,7 +35,7 @@ app.use(session({
 }));
 
 app.use(flash());
- 
+
 
 //bring passport 
 app.use(passport.initialize());
@@ -92,9 +92,8 @@ app.use('/orders', orders);
 app.use('/users', users);
 app.use('/feedback', feedbackRoutes);
 app.use('/admin', adminDashboardRoute);
+app.use("/infoAAR", infoAARRoutes); 
 
-
-//bring icon image with path ico
 app.use(favicon(path.join(__dirname, 'public', 'favicon', 'favicon.ico')));
 app.use((req, res, next) => {
     if (req.url === '/favicon/favicon.ico' || '/favicon/profile.jpg') {
@@ -102,6 +101,12 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+
+
+
+
+ 
 
 // Start the server
 app.listen(3000, function () {
