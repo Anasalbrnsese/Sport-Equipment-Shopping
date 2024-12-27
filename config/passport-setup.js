@@ -42,14 +42,14 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-
+// Local strategy for user signup
 passport.use('local.signup', new localStrategy({
     usernameField: 'email',
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, email, password, done) => {
     if (req.body.password !== req.body.confirm_password) {
-        return done(null, false, req.flash('error', 'Passwords do not match'));
+        return done(null, false, req.flash('error', 'Passwords do not match.'));
     }
 
     // Validate email format
@@ -66,7 +66,7 @@ passport.use('local.signup', new localStrategy({
     try {
         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
-            return done(null, false, req.flash('error', 'Email is already registered'));
+            return done(null, false, req.flash('error', 'Email is already registered.'));
         }
 
         // Generate a magic link token and expiration
@@ -75,24 +75,24 @@ passport.use('local.signup', new localStrategy({
 
         const newUser = new User();
         newUser.name = req.body.name;
-        newUser.email = req.body.email;
-        newUser.password = newUser.hashPassword(req.body.password); // Save hashed password (optional)
+        newUser.email = email;
+        newUser.password = await bcrypt.hash(req.body.password, 10); // Save hashed password
         newUser.role = req.body.role || 'user';
         newUser.avatar = "default-avatar.png";
         newUser.magicToken = magicToken;
         newUser.magicTokenExpiry = magicTokenExpiry;
-        newUser.isVerified = false; // User is not verified yet
+        newUser.isVerified = false;
 
         await newUser.save();
 
         // Send magic link via email
         const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST, // e.g., smtp.gmail.com
-            port: process.env.EMAIL_PORT, // e.g., 587
-            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: process.env.EMAIL_SECURE === 'true',
             auth: {
-                user: process.env.EMAIL_USER, // your email
-                pass: process.env.EMAIL_PASS  // your email password or app-specific password
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
             }
         });
 
@@ -103,7 +103,7 @@ passport.use('local.signup', new localStrategy({
             to: newUser.email,
             subject: 'Verify your account',
             text: `Click the following link to verify your account: ${magicLink}`,
-            html: `<p>Click the following link to verify your account:</p><a href="${magicLink}">click here to verify your email.</a>`
+            html: `<p>Click the following link to verify your account:</p><a href="${magicLink}">Verify your email.</a>`
         };
 
         await transporter.sendMail(mailOptions);
@@ -114,75 +114,88 @@ passport.use('local.signup', new localStrategy({
     }
 }));
 
-// Local strategy for login
+// Local strategy for user login
 passport.use('local.login', new localStrategy({
     usernameField: 'email',
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, email, password, done) => {
     try {
+        // Validate the password field
+        if (!password) {
+            return done(null, false, req.flash('error', 'Password is required.'));
+        }
+
         // Find the user by email
         const user = await User.findOne({ email: email });
 
         if (!user) {
-            return done(null, false, req.flash('error', 'Email or Password is Wrong'));
+            return done(null, false, req.flash('error', 'Email or Password is wrong.'));
+        }
+
+        // Check if the user is verified
+        if (!user.isVerified) {
+            return done(null, false, req.flash('error', 'Please verify your email first.'));
+        }
+
+        // Ensure the user has a password
+        if (!user.password) {
+            return done(null, false, req.flash('error', 'This account does not have a password. Please use Google login.'));
         }
 
         // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
-            return done(null, user, req.flash('success', 'Welcome back'));
+            return done(null, user, req.flash('success', 'Welcome back.'));
         } else {
-            return done(null, false, req.flash('error', 'Email or Password is Wrong!'));
+            return done(null, false, req.flash('error', 'Email or Password is wrong.'));
         }
     } catch (err) {
         console.error("Error in login strategy:", err);
-        return done(null, false, req.flash('error', 'Something wrong happened'));
+        return done(null, false, req.flash('error', 'Something went wrong.'));
     }
 }));
 
+// // Google OAuth 2.0 Strategy
+// passport.use(new GoogleStrategy({
+//     clientID: process.env.GOOGLE_CLIENT_ID,
+//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//     callbackURL: "http://localhost:3000/users/auth/google/callback",
+//     scope: ['openid', 'profile', 'email']
+// }, async (accessToken, refreshToken, profile, done) => {
+//     try {
+//         // Check if the user exists based on googleId
+//         let user = await User.findOne({ googleId: profile.id });
 
-// إعداد Google OAuth 2.0
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/users/auth/google/callback",
-    scope: ['openid', 'profile', 'email'] // النطاقات المطلوبة
-}, async (accessToken, refreshToken, profile, done) => {
-    try {
-        // تحقق ما إذا كان المستخدم موجودًا بناءً على googleId
-        let user = await User.findOne({ googleId: profile.id });
+//         if (user) {
+//             return done(null, user);
+//         }
 
-        if (user) {
-            return done(null, user);
-        }
+//         // Check if the user exists based on the email
+//         user = await User.findOne({ email: profile.emails[0].value });
 
-        // تحقق بناءً على البريد الإلكتروني إذا كان المستخدم موجودًا
-        user = await User.findOne({ email: profile.emails[0].value });
+//         if (user) {
+//             // Add googleId to the user
+//             user.googleId = profile.id;
+//             await user.save();
+//             return done(null, user);
+//         }
 
-        if (user) {
-            // إذا كان المستخدم موجودًا، قم بإضافة googleId
-            user.googleId = profile.id;
-            await user.save();
-            return done(null, user);
-        }
+//         // Create a new user if not found
+//         user = new User({
+//             googleId: profile.id,
+//             name: profile.displayName,
+//             email: profile.emails[0].value,
+//             avatar: profile.photos ? profile.photos[0].value : 'default-avatar.png',
+//             isVerified: true // Automatically verified if signing in via Google
+//         });
 
-        // إنشاء مستخدم جديد إذا لم يكن موجودًا مسبقًا
-        user = new User({
-            googleId: profile.id,
-            name: profile.displayName,
-            email: profile.emails[0].value,
-            avatar: profile.photos ? profile.photos[0].value : 'default-avatar.png', // إضافة صورة للملف الشخصي إذا كانت موجودة
-        });
+//         await user.save();
+//         return done(null, user);
 
-        // تجاوز التحقق من كلمة المرور في حال كان تسجيل الدخول عبر Google
-        user.validateBeforeSave = false; // تعطيل التحقق قبل الحفظ إذا لم تكن هناك كلمة مرور
-        await user.save();
-        return done(null, user);
-
-    } catch (err) {
-        return done(err, null); // إرجاع الخطأ في حال حدوثه
-    }
-}));
+//     } catch (err) {
+//         return done(err, null);
+//     }
+// }));
 
 module.exports = passport;

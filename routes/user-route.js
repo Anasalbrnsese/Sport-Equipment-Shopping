@@ -27,8 +27,8 @@ const isAuthenticated = (req, res, next) => {
         return res.redirect('/users/login')
     }
     if (!req.user.isVerified) {
-        
-        req.flash('error', "you need to verify your email");
+
+        req.flash('error', "you need to sign up in first and verify your account");
         return res.redirect('/users/login')
     }
     next()
@@ -318,31 +318,6 @@ router.get('/logout', async (req, res) => {
         res.redirect('/users/login');
     });
 });
-
-
-// بدء المصادقة مع Google
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// التعامل مع إعادة التوجيه بعد المصادقة
-router.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/users/login', failureFlash: true }),
-    async (req, res) => {
-        try {
-            // استرجاع بيانات المستخدم من قاعدة البيانات
-            const userFromDb = await User.findById(req.user._id); // استرجاع المستخدم من قاعدة البيانات
-
-            // استرجاع السلة من قاعدة البيانات وتخزينها في الجلسة
-            // req.session.cart = userFromDb.cart || []; // حفظ السلة في الجلسة
-
-            // عرض رسالة النجاح
-            req.flash('success', 'Successfully logged in via Google. Welcome to our platform!');
-            res.redirect('/users/profile');
-        } catch (err) {
-            console.log(err);
-            req.flash('error', 'Error retrieving cart from database');
-            res.redirect('/users/login');
-        }
-    });
 
 
 module.exports = router;
