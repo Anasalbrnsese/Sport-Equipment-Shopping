@@ -4,6 +4,8 @@ const Product = require('../models/products');
 const { check, validationResult } = require('express-validator');
 const Category = require('../models/category');
 const { isAdminOrMerchant, isAuthenticated } = require('../middlewares/auth');
+const multer = require('multer');
+const path = require('path');
 
 
 // مسار العرض الأولي للمنتجات
@@ -95,13 +97,6 @@ router.get('/filter', async (req, res) => {
     }
 });
 
-
-
-const multer = require('multer');
-const path = require('path');
-const { authenticate } = require("passport");
-
-
 // Set up multer storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -112,7 +107,24 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+// Check file type
+const fileFilter = (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (extname && mimetype) {
+        return cb(null, true); // Accept the file
+    } else {
+        req.flash('errors', [{ msg: 'You need to upload an image (jpeg, jpg, or png).' }]);
+        return cb(null, false); // Reject the file
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter
+});
 
 router.get('/createProduct', isAuthenticated, isAdminOrMerchant, async (req, res) => {
     try {
@@ -126,7 +138,9 @@ router.get('/createProduct', isAuthenticated, isAdminOrMerchant, async (req, res
         res.status(500).send('Error fetching categories');
     }
 });
+
 router.post('/createProduct', isAdminOrMerchant, upload.single('image'), [
+    check('image').notEmpty().withMessage('Image is required'),
     check('title').notEmpty().withMessage('Title is required'),
     check('price').isNumeric().withMessage('Price must be a number'),
     check('description').notEmpty().withMessage('Description is required'),
@@ -154,6 +168,7 @@ router.post('/createProduct', isAdminOrMerchant, upload.single('image'), [
         res.status(500).send('Error saving product');
     }
 });
+
 
 // Route for fetching a single product by ID
 router.get('/:id', async (req, res) => {
