@@ -126,7 +126,7 @@ io.on('connection', async (socket) => {
         const userId = socket.request.session?.passport?.user;
         if (userId) {
             const userExists = await User.findById(userId);
-            console.log(userExists)
+            // console.log(userExists)
             if (userExists.role === 'user' || userExists.role === 'merchant') {
                 socket.join(`user-${userId}`);
                 console.log(`User ${userId} has joined room: user`);
