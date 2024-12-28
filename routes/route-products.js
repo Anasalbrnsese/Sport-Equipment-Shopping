@@ -7,7 +7,6 @@ const { isAdminOrMerchant, isAuthenticated } = require('../middlewares/auth');
 const multer = require('multer');
 const path = require('path');
 
-
 // مسار العرض الأولي للمنتجات
 router.get('/', async (req, res) => {
     try {
@@ -126,6 +125,7 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
+// Form for creating product
 router.get('/createProduct', isAuthenticated, isAdminOrMerchant, async (req, res) => {
     try {
         const categories = await Category.find(); // Fetch all categories from the database
@@ -139,8 +139,8 @@ router.get('/createProduct', isAuthenticated, isAdminOrMerchant, async (req, res
     }
 });
 
+// Handle product creation with image upload
 router.post('/createProduct', isAdminOrMerchant, upload.single('image'), [
-    check('image').notEmpty().withMessage('Image is required'),
     check('title').notEmpty().withMessage('Title is required'),
     check('price').isNumeric().withMessage('Price must be a number'),
     check('description').notEmpty().withMessage('Description is required'),
@@ -148,6 +148,11 @@ router.post('/createProduct', isAdminOrMerchant, upload.single('image'), [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         req.flash('errors', errors.array());
+        return res.redirect('/product/createProduct');
+    }
+
+    if (!req.file) {
+        req.flash('errors', [{ msg: 'You need to upload an image.' }]);
         return res.redirect('/product/createProduct');
     }
 
@@ -168,7 +173,6 @@ router.post('/createProduct', isAdminOrMerchant, upload.single('image'), [
         res.status(500).send('Error saving product');
     }
 });
-
 
 // Route for fetching a single product by ID
 router.get('/:id', async (req, res) => {
@@ -192,7 +196,6 @@ router.get('/:id', async (req, res) => {
         res.status(500).send('Server error: ' + err);
     }
 });
-
 
 // Route to render the edit product form
 router.get('/edit/:id', isAuthenticated, isAdminOrMerchant, async (req, res) => {
