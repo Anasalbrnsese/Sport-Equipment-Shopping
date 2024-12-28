@@ -12,7 +12,7 @@ const { default: mongoose } = require('mongoose');
 router.use(isAdmin);
 
 // Dashboard Route
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', isAdmin, async (req, res) => {
     try {
         const users = await User.find();
         const orders = await Order.find();
@@ -33,7 +33,7 @@ router.get('/dashboard', async (req, res) => {
     }
 });
 
-router.put('/users/:id/block-unblock', async (req, res) => {
+router.put('/users/:id/block-unblock', isAdmin, async (req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findById(id);
