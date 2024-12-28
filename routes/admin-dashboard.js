@@ -31,41 +31,37 @@ router.get('/dashboard', async (req, res) => {
     }
 });
 
-// Block/Unblock User Route
 router.put('/users/:id/block-unblock', async (req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findById(id);
         if (!user) {
-            return res.status(404).send('User not found');
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Toggle the user's verification status (block/unblock)
+        // Toggle the isVerified status
         user.isVerified = !user.isVerified;
         await user.save();
 
-        // If the user is unblocked, log them out if they are logged in
-        if (user.isVerified && req.session.userId === user._id.toString()) {
-            req.session.destroy((err) => {
-                if (err) {
-                    return res.status(500).send('Failed to destroy session');
-                }
-                res.status(200).send({
-                    message: `User account unblocked successfully and logged out.`,
-                    user,
-                });
-            });
-        } else {
-            res.status(200).send({
-                message: `User account ${user.isVerified ? 'unblocked' : 'blocked'} successfully.`,
+        // If the user is blocked and is currently logged in, log them out
+        if (!user.isVerified && req.user._id.toString() === user._id.toString()) {
+            req.logout();  // Log the user out if they are the one being blocked
+            return res.status(200).json({
+                message: 'Your account has been blocked. You have been logged out.',
                 user,
             });
         }
 
+        // Success response
+        res.status(200).json({
+            message: `User account ${user.isVerified ? 'unblocked' : 'blocked'} successfully.`,
+            user,
+        });
     } catch (error) {
         console.error('Error updating user status:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+
 
 module.exports = router;

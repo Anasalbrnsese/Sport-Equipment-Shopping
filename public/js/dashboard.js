@@ -1,5 +1,3 @@
-// admin-dashboard.js
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Dashboard loaded successfully!");
 
@@ -19,23 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
             if (confirmed) {
                 try {
                     const response = await fetch(`/admin/users/${userId}/block-unblock`, { method: 'PUT' });
-                    const result = await response.json();
+                    const result = await response.json(); // Parse response as JSON
 
                     if (response.ok) {
                         alert(result.message);
-
-                        // If the user is unblocked, logout the current user if needed
-                        if (result.message.includes('unblocked')) {
-                            // Log out the user
-                            const logoutResponse = await fetch('users/logout', { method: 'GET' });
-                            if (logoutResponse.ok) {
-                                alert('User was unblocked and logged out.');
-                                window.location.href = 'users/login'; // Redirect to login page after logout
-                            } else {
-                                alert('Failed to log out user.');
-                            }
+                        if (result.message.includes("blocked") && result.user._id === currentUserId) {
+                            // Logout if the current logged-in user is blocked
+                            alert("Your account has been blocked. You will be logged out.");
+                            window.location.href = "users/login"; // Redirect to logout
                         }
-
                         location.reload(); // Reload to reflect changes
                     } else {
                         alert('Error: ' + (result.message || 'Failed to update user status.'));
