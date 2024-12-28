@@ -19,20 +19,25 @@ const path = require('path');
 const feedbackRoutes = require('./routes/feedback');
 const adminDashboardRoute = require('./routes/admin-dashboard');
 const infoAARRoutes = require('./routes/infoAAR');
+const User = require('./models/user');
 const mongodbStore = new mongodbSession({
     uri: 'mongodb://localhost:27017/productdb',
     collection: 'sessions',
-    expiresIn: 60000 * 15
+    expiresIn: 1000 * 60 * 60 * 24 * 7, // 7 days
 })
 
+
 // session and flach config
-app.use(session({
+const sessionMiddleware = session({
     secret: 'lorem ipsum',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 * 15 },
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
     store: mongodbStore
-}));
+})
+app.use(sessionMiddleware);
 
 app.use(flash());
 
@@ -92,7 +97,7 @@ app.use('/orders', orders);
 app.use('/users', users);
 app.use('/feedback', feedbackRoutes);
 app.use('/admin', adminDashboardRoute);
-app.use("/infoAAR", infoAARRoutes); 
+app.use("/infoAAR", infoAARRoutes);
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon', 'favicon.ico')));
 app.use((req, res, next) => {
@@ -106,9 +111,31 @@ app.use((req, res, next) => {
 
 
 
- 
+
 
 // Start the server
-app.listen(3000, function () {
+const server = app.listen(3000, function () {
     console.log("Running on port 3000.");
+});
+const io = require('./utils/socket-io').init(server);
+io.engine.use(sessionMiddleware)
+io.on('connection', async (socket) => {
+    try {
+        // Handle authenticated user (Admin)
+        console.log(`User connected, socket ID: ${socket.id}`);
+        const userId = socket.request.session?.passport?.user;
+        if (userId) {
+            const userExists = await User.findById(userId);
+            console.log(userExists)
+            if (userExists.role === 'user' || userExists.role === 'merchant') {
+                socket.join(`user-${userId}`);
+                console.log(`User ${userId} has joined room: user`);
+            }
+        }
+        socket.on('disconnect', () => {
+            console.log('Client disconnected');
+        });
+    } catch (e) {
+        console.log(e)
+    }
 });

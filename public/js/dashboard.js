@@ -20,12 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     const result = await response.json(); // Parse response as JSON
 
                     if (response.ok) {
-                        alert(result.message);
-                        if (result.message.includes("blocked") && result.user._id === currentUserId) {
-                            // Logout if the current logged-in user is blocked
-                            alert("Your account has been blocked. You will be logged out.");
-                            window.location.href = "users/login"; // Redirect to logout
-                        }
                         location.reload(); // Reload to reflect changes
                     } else {
                         alert('Error: ' + (result.message || 'Failed to update user status.'));

@@ -23,7 +23,7 @@ var upload = multer({ storage: storage });
 // للتحقق مما إذا كان المستخدم مسجلاً
 const isAuthenticated = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        req.flash('error', "Your session has expired");
+        req.flash('error', "unauthorized access");
         return res.redirect('/users/login')
     }
     if (!req.user.isVerified) {

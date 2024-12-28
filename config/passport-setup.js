@@ -135,7 +135,7 @@ passport.use('local.login', new localStrategy({
 
         // Check if the user is verified
         if (!user.isVerified) {
-            return done(null, false, req.flash('error', 'Please verify your email first.'));
+            return done(null, false, req.flash('error', 'Unauthorized access.'));
         }
 
         // Ensure the user has a password

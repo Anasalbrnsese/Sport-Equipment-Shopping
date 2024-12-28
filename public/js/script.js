@@ -96,3 +96,5 @@ document.getElementById('passwordLogin').addEventListener('input', function () {
     document.getElementById('number-msg-3').classList.toggle('valid', hasNumber);
     document.getElementById('special-char-msg-3').classList.toggle('valid', hasSpecialChar);
 });
+
+

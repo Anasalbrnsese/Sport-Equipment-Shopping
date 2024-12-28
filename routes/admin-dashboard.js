@@ -5,6 +5,8 @@ const Order = require('../models/order');
 const User = require('../models/user');
 const Feedback = require('../models/feedback');
 const { isAdmin } = require('../middlewares/auth');
+const { getIO } = require('../utils/socket-io');
+const { default: mongoose } = require('mongoose');
 
 // Middleware to ensure only admins can access
 router.use(isAdmin);
@@ -43,13 +45,21 @@ router.put('/users/:id/block-unblock', async (req, res) => {
         user.isVerified = !user.isVerified;
         await user.save();
 
-        // If the user is blocked and is currently logged in, log them out
-        if (!user.isVerified && req.user._id.toString() === user._id.toString()) {
-            req.logout();  // Log the user out if they are the one being blocked
-            return res.status(200).json({
-                message: 'Your account has been blocked. You have been logged out.',
-                user,
-            });
+        // Find the session associated with the user
+
+        const session = await mongoose.connection.collection('sessions').findOne({
+            'session.passport.user': user._id.toString()
+        });
+
+
+
+        if (session) {
+            // Remove the session
+            await mongoose.connection.collection('sessions').deleteOne({ _id: session._id });
+            console.log('Session removed for user:', user._id);
+            getIO().to(`user-${user._id}`).emit('session-expired', 'Your session has been terminated. Please log in again')
+        } else {
+            console.log('No active session for the user.');
         }
 
         // Success response
@@ -62,6 +72,7 @@ router.put('/users/:id/block-unblock', async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+
 
 
 module.exports = router;
