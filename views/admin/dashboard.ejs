@@ -7,7 +7,7 @@
     <title>Admin Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/dashboard.css"> <!-- Your custom styles -->
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 
 <body>
@@ -33,10 +33,15 @@
                         <i class="fas fa-comments"></i> Feedback
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#block-unblock-tab" id="block-unblock-tab">
+                        <i class="fas fa-ban"></i> Block/Unblock Users
+                    </a>
+                </li>
             </ul>
         </div>
 
-        <!-- Main content -->
+        <!-- Main Content -->
         <div class="main-content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="#">Dashboard</a>
@@ -72,74 +77,98 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Users Section -->
+                <section id="users-section" class="details-section">
+                    <h2>Users</h2>
+                    <ul>
+                        <% users.forEach(user=> { %>
+                            <li>
+                                <%= user.name %> - <%= user.email %>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </section>
                 <div class="text-center mt-4">
                     <a href="/users/profile" class="btn btn-outline-success custom-btn-admin">
                         Back to Profile Account
                     </a>
                 </div>
-                <style>
-                    .custom-btn-admin {
-                        font-size: 16px;
-                        padding: 12px 30px;
-                        border-radius: 50px;
-                        background-color: #fff;
-                        border: 2px solid #28a745;
-                        color: #28a745;
-                        transition: all 0.3s ease;
-                    }
+                <!-- Orders Section -->
+                <section id="orders-section" class="details-section" style="display: none;">
+                    <h2>Orders</h2>
+                    <ul>
+                        <% orders.forEach(order=> { %>
+                            <li>Order #<%= order.id %>: <%= order.status %>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </section>
 
-                    .custom-btn-admin:hover {
-                        background-color: #28a745;
-                        color: #fff;
-                        transform: scale(1.05);
-                        cursor: pointer;
-                    }
-                </style>
-                <!-- Details Sections -->
-                <section class="details">
-                    <!-- Users Section -->
-                    <div id="users-section" class="details-section">
-                        <h2>Users</h2>
-                        <ul>
-                            <% users.forEach(user=> { %>
-                                <li>
-                                    <%= user.name %> - <%= user.email %>
-                                </li>
-                                <% }); %>
-                        </ul>
-                    </div>
+                <!-- Feedback Section -->
+                <section id="feedback-section" class="details-section" style="display: none;">
+                    <h2>Feedback</h2>
+                    <ul>
+                        <% feedback.forEach(fb=> { %>
+                            <li>
+                                <strong>Order:</strong> #<%= fb.orderId.id %><br>
+                                    <strong>User:</strong>
+                                    <%= fb.userId.name %> (<%= fb.userId.email %>)<br>
+                                            <strong>Rating:</strong>
+                                            <%= fb.rating %>/5<br>
+                                                <strong>Comment:</strong>
+                                                <%= fb.comment %>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </section>
 
-                    <!-- Orders Section -->
-                    <div id="orders-section" class="details-section" style="display: none;">
-                        <h2>Orders</h2>
-                        <ul>
-                            <% orders.forEach(order=> { %>
-                                <li>Order #<%= order.id %>: <%= order.status %>
-                                </li>
-                                <% }); %>
-                        </ul>
-                    </div>
-
-                    <!-- Feedback Section -->
-                    <div id="feedback-section" class="details-section" style="display: none;">
-                        <h2>Feedback</h2>
-                        <ul>
-                            <% feedback.forEach(fb=> { %>
-                                <li>
-                                    <strong>Order:</strong> #<%= fb.orderId.id %> <br>
-                                        <strong>User:</strong>
-                                        <%= fb.userId.name %> (<%= fb.userId.email %>) <br>
-                                                <strong>Phone:</strong>
-                                                <%= fb.userId.phone %> <br>
-                                                    <strong>Rating:</strong>
-                                                    <%= fb.rating %>/5 <br>
-                                                        <strong>Comment:</strong>
-                                                        <%= fb.comment %> <br>
-                                                            <strong>Submitted:</strong>
-                                                            <%= fb.createdAt.toLocaleString() %>
-                                </li>
-                                <% }); %>
-                        </ul>
+                <!-- Block/Unblock Users Section -->
+                <section id="block-unblock-section" class="details-section" style="display: none;">
+                    <h2>Block/Unblock Users</h2>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover shadow-sm rounded-lg">
+                            <thead class="bg-dark text-white">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th> <!-- New Role Column -->
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% users.forEach((user, index)=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= index + 1 %>
+                                        </td>
+                                        <td>
+                                            <%= user.name %>
+                                        </td>
+                                        <td>
+                                            <%= user.email %>
+                                        </td>
+                                        <td>
+                                            <%= user.role %>
+                                        </td> <!-- Displaying the Role -->
+                                        <td>
+                                            <span class="<%= user.isVerified ? 'text-success' : 'text-danger' %>">
+                                                <%= user.isVerified ? 'Active' : 'Blocked' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button
+                                                class="btn <%= user.isVerified ? 'btn-danger' : 'btn-success' %> btn-sm block-unblock-user"
+                                                data-user-id="<%= user._id %>">
+                                                <%= user.isVerified ? 'Block' : 'Unblock' %>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
                     </div>
                 </section>
             </div>

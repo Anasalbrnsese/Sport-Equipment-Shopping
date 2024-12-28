@@ -19,7 +19,8 @@ body {
 .dashboard-container {
     display: flex;
     min-height: 100vh;
-    flex-wrap: wrap;  /* Ensures content wraps on small screens */
+    flex-wrap: wrap;
+    /* Ensures content wraps on small screens */
 }
 
 /* Sidebar styling */
@@ -59,14 +60,16 @@ body {
 
 /* Main content area */
 .main-content {
-    margin-left: 250px; /* Ensure the content isn't hidden behind the sidebar */
+    margin-left: 250px;
+    /* Ensure the content isn't hidden behind the sidebar */
     padding: 20px;
     flex-grow: 1;
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-top: 20px;
-    max-width: calc(100% - 250px); /* Ensure it doesn't exceed the sidebar width */
+    max-width: calc(100% - 250px);
+    /* Ensure it doesn't exceed the sidebar width */
 }
 
 /* Overview section */
@@ -77,7 +80,8 @@ body {
 .overview-stats {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;  /* Allow stats to wrap on smaller screens */
+    flex-wrap: wrap;
+    /* Allow stats to wrap on smaller screens */
 }
 
 .stat {
@@ -85,7 +89,8 @@ body {
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    flex: 1 1 22%; /* Flex-grow, flex-shrink, and flex-basis */
+    flex: 1 1 22%;
+    /* Flex-grow, flex-shrink, and flex-basis */
     margin: 10px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
@@ -128,11 +133,13 @@ body {
 /* Responsive styling */
 @media (max-width: 768px) {
     .dashboard-container {
-        flex-direction: column; /* Stack the sidebar and main content on smaller screens */
+        flex-direction: column;
+        /* Stack the sidebar and main content on smaller screens */
     }
 
     .sidebar {
-        width: 100%; /* Full width on small screens */
+        width: 100%;
+        /* Full width on small screens */
         position: relative;
         height: auto;
     }
@@ -144,7 +151,8 @@ body {
     }
 
     .stat {
-        flex: 1 1 48%; /* Adjust the width of stats on small screens */
+        flex: 1 1 48%;
+        /* Adjust the width of stats on small screens */
     }
 }
 
@@ -154,4 +162,25 @@ body {
     color: white;
     padding: 10px 20px;
     text-align: center;
+}
+
+.custom-btn-admin {
+    font-size: 16px;
+    padding: 12px 30px;
+    border-radius: 50px;
+    background-color: #fff;
+    border: 2px solid #28a745;
+    color: #28a745;
+    transition: all 0.3s ease;
+}
+
+.custom-btn-admin:hover {
+    background-color: #28a745;
+    color: #fff;
+    -o-transform: scale(1.05);
+    cursor: pointer;
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
 }
