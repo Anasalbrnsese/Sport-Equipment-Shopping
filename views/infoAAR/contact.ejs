@@ -1,11 +1,47 @@
 <%- include('../partails/header') -%>
     <%- include('../partails/navbar') -%>
-        <h1>Contact AAR Sport Equipment</h1>
-        <p>Feel free to reach out to us for any inquiries or assistance.</p>
-        <ul>
-            <li><strong>Email:</strong> contact@aarsport.com</li>
-            <li><strong>Phone:</strong> +123-456-7890</li>
-            <li><strong>Address:</strong> 123 AAR Sport Street, City, Country</li>
-        </ul>
-        <h3>Our Customer Service Team is ready to assist you!</h3>
+        <!-- Contact Section -->
+        <div class="container" style="margin-top: 25px; margin-bottom: 25px;">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                        <div class="card-header bg-opacity-75.5 bg-primary text-white text-center py-4"
+                            style="border-top-right-radius: 15px; border-top-left-radius: 15px;">
+                            <h1 class="mb-0">Contact AAR Sport Equipment</h1>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-center font-style">
+                                Feel free to reach out to us for any inquiries or assistance.
+                            </p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Email:</strong>
+                                    <a href="mailto:contact@aarsport.com"
+                                        class="text-decoration-none">contact@aarsport.com</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Phone:</strong>
+                                    <a href="tel:+1234567890" class="text-decoration-none">+123-456-7890</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Address:</strong> 123 AAR Sport Street, City, Country
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-footer text-center"
+                            style="border-bottom-right-radius: 15px; border-bottom-left-radius: 15px;background-color: rgb(239, 239, 239);">
+                            <h3 class="mb-0">Our Customer Service Team is ready to assist you!</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .font-style {
+                padding-top: 15px;
+                font-size: 17px;
+                color: darkgray;
+                font-weight: 500;
+            }
+        </style>
         <%- include('../partails/footer') -%>

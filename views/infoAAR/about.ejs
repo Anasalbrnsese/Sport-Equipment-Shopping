@@ -1,17 +1,65 @@
 <%- include('../partails/header') -%>
     <%- include('../partails/navbar') -%>
-        <h1>About AAR Sport</h1>
-        <p>AAR Sport is dedicated to providing the highest quality sports equipment. Our mission is to offer reliable,
-            durable,
-            and top-notch products for athletes and sports enthusiasts. With years of experience in the industry, we aim
-            to
-            serve you with the best equipment that meets your needs.</p>
+        <div class="container"
+            style="margin-top: 25px; margin-bottom: 25px;background-color:white;border-radius: 15px;">
+            <div class="row">
 
-        <h3>Why Choose Us?</h3>
-        <ul>
-            <li>High-quality products</li>
-            <li>Affordable prices</li>
-            <li>Fast shipping</li>
-            <li>Customer satisfaction guaranteed</li>
-        </ul>
+                <h1 class="bg-success bg-opacity-75.5 text-white text-center py-4"
+                    style="border-top-right-radius: 15px;border-top-left-radius: 15px;">About AAR Sport</h1>
+
+                <div class="col-md-12">
+                    <p class="text-center font-style">
+                        AAR Sport is dedicated to providing the highest quality sports equipment. Our mission is to
+                        offer
+                        reliable, durable, and top-notch products for athletes and sports enthusiasts. With years of
+                        experience in the industry, we aim to serve you with the best equipment that meets your needs.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <h3 class="text-center" style="color: green;">Why Choose Us?</h3>
+                    <ul class=" d-flex align-items-center justify-content-center"
+                        style="padding-top: 10px;padding-bottom: 10px;">
+                        <li class="About-us-li">
+                            <div style="background-color: #0000FF;">High-quality products</div>
+                        </li>
+                        <li class="About-us-li">
+                            <div style="background-color: #1E90FF;">Affordable prices</div>
+                        </li>
+                        <li class="About-us-li">
+                            <div style="background-color: #87CEEB;">Fast shipping</div>
+                        </li>
+                        <li class="About-us-li">
+                            <div style="background-color: #a4bedf;">Customer satisfaction guaranteed</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <style>
+            .About-us-li {
+                float: left;
+                list-style-type: none;
+                margin-left: 30px;
+                color: white;
+
+            }
+
+            .About-us-li div {
+                border-radius: 15px;
+                padding-top: 4px;
+                padding-bottom: 4px;
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+
+            .font-style {
+                padding-top: 20px;
+                font-size: 17px;
+                color: darkgray;
+                font-weight: 500;
+            }
+        </style>
         <%- include('../partails/footer') -%>
