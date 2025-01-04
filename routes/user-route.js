@@ -334,7 +334,7 @@ router.post('/forgot-password', async (req, res) => {
         // Find user by email
         const user = await User.findOne({ email });
         if (!user) {
-            req.flash('error', 'Email not found');
+            req.flash('error', 'Your Email Invalid');
             return res.redirect('/users/forgot-password');
         }
 
