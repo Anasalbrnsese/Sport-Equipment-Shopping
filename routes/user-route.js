@@ -389,6 +389,13 @@ router.post('/reset-password/:token', async (req, res) => {
     const { password } = req.body;
 
     try {
+        // Password pattern validation
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+        if (!passwordPattern.test(password)) {
+            req.flash('error', 'Password must be at least 8 characters long, contain a lowercase letter, an uppercase letter, a number, and a special character.');
+            return res.redirect(`/users/reset-password/${token}`);
+        }
+
         // Find user with valid token
         const user = await User.findOne({
             resetPasswordExpires: { $gt: Date.now() },
@@ -417,4 +424,5 @@ router.post('/reset-password/:token', async (req, res) => {
         res.redirect('/users/forgot-password');
     }
 });
+
 module.exports = router;
