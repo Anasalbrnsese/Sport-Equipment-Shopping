@@ -1,41 +1,42 @@
 <%- include('../partails/header') -%>
     <%- include('../partails/navbar') -%>
-        <div class="container mt-5">
-            <h2 class="mb-4 text-center">Add Category</h2>
-            <div class="text-center">
-                <a href="/admin/categories" class="btn btn-sm btn-success">back to all categories</a>
-
-            </div>
-            <form action="/admin/categories/add-category" method="POST">
-
-                <!-- Category Title -->
-                <div class="form-group">
-                    <label for="title">Category Title</label>
-                    <input type="text" name="title" id="title" value="<%= title %>" class="form-control"
-                        placeholder="Enter category title" required>
-                </div>
-
-                <!-- Category Slug -->
-                <div class="form-group">
-                    <label for="slug">Slug</label>
-                    <input type="text" name="slug" id="slug" value="<%= slug %>" class="form-control"
-                        placeholder="Enter slug (optional)">
-                </div>
-
-                <!-- Category Description -->
-                <div class="form-group">
-                    <label for="content">Description</label>
-                    <textarea name="content" id="content" class="form-control" rows="5"
-                        placeholder="Enter category description"></textarea>
-                </div>
-
-                <!-- Submit Button -->
+        <%- include('../partails/flashMessageLogin') -%>
+            <div class="container mt-5">
+                <h2 class="mb-4 text-center">Add Category</h2>
                 <div class="text-center">
-                    <button type="submit" class="btn btn-success btn-lg mt-3">
-                        <i class="fas fa-plus"></i> Add Category
-                    </button>
-                </div>
-            </form>
-        </div>\
+                    <a href="/admin/categories" class="btn btn-sm btn-success">back to all categories</a>
 
-        <%- include('../partails/footer') -%>
+                </div>
+                <form action="/admin/categories/add-category" method="POST">
+
+                    <!-- Category Title -->
+                    <div class="form-group">
+                        <label for="title">Category Title</label>
+                        <input type="text" name="title" id="title" value="<%= title %>" class="form-control"
+                            placeholder="Enter category title" required>
+                    </div>
+
+                    <!-- Category Slug -->
+                    <div class="form-group">
+                        <label for="slug">Slug</label>
+                        <input type="text" name="slug" id="slug" value="<%= slug %>" class="form-control"
+                            placeholder="Enter slug (optional)">
+                    </div>
+
+                    <!-- Category Description -->
+                    <div class="form-group">
+                        <label for="content">Description</label>
+                        <textarea name="content" id="content" class="form-control" rows="5"
+                            placeholder="Enter category description"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg mt-3">
+                            <i class="fas fa-plus"></i> Add Category
+                        </button>
+                    </div>
+                </form>
+            </div>\
+
+            <%- include('../partails/footer') -%>

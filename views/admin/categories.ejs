@@ -1,50 +1,75 @@
 <%- include('../partails/header') -%>
     <%- include('../partails/navbar') -%>
+        <%- include('../partails/flashMessageLogin') -%>
+            <div class="container mt-5">
+                <h2 class="mb-4 text-center text-primary">Categories</h2>
+                <div class="text-center my-4">
+                    <a href="/admin/categories/add-category" class="btn btn-sm btn-success">
+                        <i class="fas fa-plus"></i> Add Category
+                    </a>
+                </div>
 
-        <div class="container mt-5">
-            <h2 class="mb-4 text-center text-primary">Categories</h2>
-            <div class="text-center my-4">
-                <a href="/admin/categories/add-category" class="btn btn-sm btn-success">
-                    <i class="fas fa-plus"></i> Add Category
-                </a>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover shadow-sm rounded-lg">
-                    <thead class="bg-dark text-white">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Category Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% categories.forEach(function(cat, index){ %>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover shadow-sm rounded-lg">
+                        <thead class="bg-dark text-white">
                             <tr>
-                                <th scope="row">
-                                    <%= index + 1 %>
-                                </th>
-                                <td>
-                                    <%= cat.title %>
-                                </td>
-                                <td>
-                                    <%= cat.slug || "No description available" %>
-                                </td>
-                                <td>
-                                    <a href="/admin/categories/edit-category/<%= cat.slug %>"
-                                        class="btn btn-sm btn-warning mr-1">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <a href="/admin/categories/delete-category/<%= cat._id %>"
-                                        class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash-alt"></i> Delete
-                                    </a>
-                                </td>
+                                <th scope="col">#</th>
+                                <th scope="col">Category Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Actions</th>
                             </tr>
-                            <% }); %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <% categories.forEach(function(cat, index){ %>
+                                <tr>
+                                    <th scope="row">
+                                        <%= index + 1 %>
+                                    </th>
+                                    <td>
+                                        <%= cat.title %>
+                                    </td>
+                                    <td>
+                                        <%= cat.slug || "No description available" %>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/categories/edit-category/<%= cat.slug %>"
+                                            class="btn btn-sm btn-warning mr-1">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="/admin/categories/delete-category/<%= cat._id %>"
+                                            class="btn btn-sm btn-danger delete-cat">
+                                            <i class="fas fa-trash-alt" ></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <%- include('../partails/footer') -%>
+            <script>
+                // Select all delete buttons with the class "delete-cat"
+                document.querySelectorAll('.delete-cat').forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault(); // Prevent the default action
+
+                        // Show SweetAlert2 confirmation dialog
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to undo this action!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Yes, delete!',
+                            cancelButtonText: 'Cancel'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // If confirmed, proceed with the delete action
+                                window.location.href = this.href;
+                            }
+                        });
+                    });
+                });
+            </script>
+            <%- include('../partails/footer') -%>

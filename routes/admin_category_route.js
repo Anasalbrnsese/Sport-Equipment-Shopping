@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Category = require('../models/category');
 const { isAdminOrMerchant } = require('../middlewares/auth');
+const Product = require('../models/products');
 
 router.get('/', isAdminOrMerchant, async (req, res) => {
     try {
@@ -37,25 +38,36 @@ router.post('/add-category', isAdminOrMerchant, async (req, res) => {
         });
 
         await newCategory.save();
+        req.flash('success', 'Category added successfully.');
         res.redirect('/admin/categories');
     } catch (err) {
         console.log(err);
         res.status(500).send("Server Error");
     }
-});
-// Route to handle deleting a category
+});// Route to handle deleting a category
 router.get('/delete-category/:id', isAdminOrMerchant, async (req, res) => {
     try {
+        // Check if there are products linked to the category
+        const products = await Product.find({ category: req.params.id });
+        if (products.length > 0) {
+            // Add an error flash message and redirect
+            req.flash('error', 'Cannot delete category: Products are associated with this category.');
+            return res.redirect('/admin/categories');
+        }
+
         // Find the category by ID and delete it
         await Category.findByIdAndDelete(req.params.id);
 
-        // Redirect to categories page after deletion
+        // Add a success flash message and redirect
+        req.flash('success', 'Category deleted successfully.');
         res.redirect('/admin/categories');
     } catch (err) {
         console.log(err);
-        res.status(500).send("Server Error");
+        req.flash('error', 'Server error. Please try again.');
+        res.redirect('/admin/categories');
     }
 });
+
 // Route to render the Edit Category form
 router.get('/edit-category/:slug', isAdminOrMerchant, async (req, res) => {
     try {
@@ -89,7 +101,8 @@ router.post('/edit-category/:slug', isAdminOrMerchant, async (req, res) => {
             { title, slug, description: content },
             { new: true } // To return the updated document
         );
-
+        await updatedCategory.save();
+        req.flash('success', 'Category updated successfully.');
         // Redirect to the categories page after updating
         res.redirect('/admin/categories');
     } catch (err) {
