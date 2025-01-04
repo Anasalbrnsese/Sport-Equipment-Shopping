@@ -5,6 +5,9 @@ const passport = require('passport');
 const multer = require("multer");
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const { register } = require("module");
 
 
 //configure multer
@@ -320,4 +323,98 @@ router.get('/logout', async (req, res) => {
 });
 
 
+// GET: Forgot Password Page
+router.get('/forgot-password', (req, res) => {
+    res.render('user/forgot-password');
+});
+router.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Find user by email
+        const user = await User.findOne({ email });
+        if (!user) {
+            req.flash('error', 'Email not found');
+            return res.redirect('/users/forgot-password');
+        }
+
+        // Generate reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const hash = await bcrypt.hash(resetToken, 10);
+
+        // Save hashed token and expiration to the user
+        user.resetPasswordToken = hash;
+        user.resetPasswordExpires = Date.now() + 3600000; // Token valid for 1 hour
+        await user.save();
+
+        // Send reset link using nodemailer
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: process.env.EMAIL_SECURE === 'true',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const resetUrl = `${req.protocol}://${req.get('host')}/users/reset-password/${resetToken}`;
+        const mailOptions = {
+            to: user.email,
+            from: process.env.EMAIL_USER,
+            subject: 'Password Reset',
+            text: `Click the link below to reset your password:\n\n${resetUrl}`,
+            html: `<strong>Click the link below to reset your password:</strong><br><a href="${resetUrl}">Reset Password</a>`
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        req.flash('success', 'Password reset link sent to your email');
+        res.redirect('/users/forgot-password');  // Redirect after email is sent
+    } catch (error) {
+        console.error('Forgot Password Error:', error);
+        req.flash('error', 'Server error');
+        res.redirect('/users/forgot-password');
+    }
+});
+
+// GET: Reset Password Page
+router.get('/reset-password/:token', (req, res) => {
+    const { token } = req.params;
+    res.render('user/reset-password', { token });
+});
+// POST: Reset Password
+router.post('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    try {
+        // Find user with valid token
+        const user = await User.findOne({
+            resetPasswordExpires: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            req.flash('error', 'Invalid or expired token');
+            return res.redirect('/users/forgot-password');
+        }
+
+        // Compare tokens
+        const isTokenValid = await bcrypt.compare(token, user.resetPasswordToken);
+        if (!isTokenValid) return res.status(400).json({ message: 'Invalid token' });
+
+        // Update password and clear reset fields
+        user.password = await bcrypt.hash(password, 10);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        await user.save();
+        req.flash('success', 'Password reset successfully');
+        res.redirect('/users/login');  // Redirect to login page after successful password reset
+    } catch (error) {
+        console.error('Reset Password Error:', error);
+        req.flash('error', 'Server error');
+        res.redirect('/users/forgot-password');
+    }
+});
 module.exports = router;

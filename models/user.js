@@ -43,7 +43,9 @@ const userSchema = mongoose.Schema({
     },
     magicToken: String,
     magicTokenExpiry: Date,
-    isVerified: { type: Boolean, default: false }
+    isVerified: { type: Boolean, default: false },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 });
 
 // دالة لتشفير كلمة المرور
