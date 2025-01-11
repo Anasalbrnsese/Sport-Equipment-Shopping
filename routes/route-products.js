@@ -175,17 +175,26 @@ router.post('/createProduct', isAdminOrMerchant, upload.single('image'), [
 });
 
 // Route for fetching a single product by ID
+// Route for fetching a single product by ID
 router.get('/:id', async (req, res) => {
     if (req.params.id === 'favicon.ico') {
-        return res.status(204).end(); // تجاهل طلبات favicon.ico
+        return res.status(204).end(); // Ignore favicon.ico requests
     }
 
     try {
-        const product = await Product.findOne({ _id: req.params.id });
+        const product = await Product.findOne({ _id: req.params.id }).populate('category');
         const cart = req.session.cart || [];
+
         if (product) {
+            // Fetch recommended products based on the same category as the current product
+            const recommendedProducts = await Product.find({
+                category: product.category,
+                _id: { $ne: product._id } // Exclude the current product from the recommendation list
+            }).limit(4); // Limit to 4 recommended products (you can change this)
+
             res.render('layout/showProducts', {
                 product: product,
+                recommendedProducts: recommendedProducts, // Pass recommended products to the template
                 cart: cart,
             });
         } else {

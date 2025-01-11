@@ -122,6 +122,49 @@
                         </div>
                     </div>
                 </div>
+                <!-- Recommended Products Section -->
+                <div class="recommended-products mt-5">
+                    <h3 class="fw-bold text-center mb-5 position-relative display-4 text-dark">
+                        <span class="text-green-gradient">Related</span> Products
+                        <div class="line-effect"></div>
+                    </h3>
+
+                    <div class="row">
+                        <% recommendedProducts.forEach(recommended=> { %>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card border-0 shadow-sm rounded-5 h-100">
+                                    <!-- Image Container with Hover Effect -->
+                                    <div class="image-container rounded-4 overflow-hidden position-relative shadow-lg">
+                                        <img src="<%= recommended.imageProduct %>"
+                                            class="img-fluid rounded product-image"
+                                            alt="<%= recommended.titleProduct %>">
+                                        <div
+                                            class="badge bg-green-gradient position-absolute top-0 end-0 m-3 p-2 px-3 fs-6">
+                                            In Stock
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body d-flex flex-column justify-content-between">
+                                        <h5 class="card-title text-dark fw-bold">
+                                            <%= recommended.titleProduct %>
+                                        </h5>
+
+                                        <!-- Price in Green Color -->
+                                        <span class="h6 text-green-gradient fs-5">$<%= recommended.priceProduct %>
+                                        </span>
+
+                                        <!-- Button with Icon -->
+                                        <a href="/product/<%= recommended._id %>"
+                                            class="btn btn-outline-green btn-sm mt-3 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-eye me-2"></i> View Product
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+
             </div>
         </div>
         </div>
@@ -229,5 +272,141 @@
                     background-clip: text;
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
+                }
+
+                /* تعزيز تصميم العنوان */
+                h3 {
+                    position: relative;
+                    font-size: 2.5rem;
+                    /* حجم خط كبير وجذاب */
+                    font-weight: 700;
+                    /* جعله أكثر سمكًا */
+                    color: #333;
+                    /* اللون الأساسي للنص */
+                    text-align: center;
+                    /* محاذاة النص في المنتصف */
+                    margin-bottom: 30px;
+                    /* مسافة بين العنوان والأشياء التالية */
+                    padding-bottom: 15px;
+                    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    /* إضافة تأثير الظل للنص */
+                }
+
+                /* تأثير التدرج الأخضر على النص */
+                h3 span.text-green-gradient {
+                    font-weight: 700;
+                    background: linear-gradient(45deg, #28a745, #218838);
+                    /* تدرج اللون الأخضر */
+                    background-clip: text;
+                    /* تطبيق التدرج على النص فقط */
+                    color: transparent;
+                    /* جعل النص شفافًا لظهور التدرج */
+                    font-size: 2.7rem;
+                    /* حجم أكبر قليلاً للتمييز */
+                    letter-spacing: 2px;
+                    /* المسافة بين الأحرف لإبراز العنوان */
+                }
+
+                /* تأثير الخط الأخضر أسفل العنوان */
+                h3 .line-effect {
+                    position: absolute;
+                    bottom: -10px;
+                    /* ضع الخط أسفل العنوان قليلاً */
+                    left: 0;
+                    width: 50%;
+                    /* جعل الخط يمتد إلى نصف العرض */
+                    height: 6px;
+                    background: linear-gradient(45deg, #28a745, #218838);
+                    /* تدرج أخضر ناعم */
+                    border-radius: 10px;
+                    /* زاوية دائرية للخط */
+                    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+                    /* إضافة ظل ناعم لتأثير العمق */
+                    margin: 0 auto;
+                    /* محاذاة الخط في المنتصف */
+                }
+
+                /* تحسين تصميم المنتجات الموصى بها */
+                .recommended-products .card {
+                    border: none;
+                    /* إزالة الحدود لجعلها أكثر عصرية */
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                    /* إضافة تأثير الظل لجعلها تطفو */
+                    border-radius: 15px;
+                    /* زوايا دائرية لجعل الشكل أكثر نعومة */
+                    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                    /* تأثيرات عند التحويم */
+                    overflow: hidden;
+                    /* إخفاء أي عناصر خارجة عن الحدود */
+                }
+
+
+
+
+                /* تحسين الأزرار */
+                .recommended-products .btn {
+                    background: linear-gradient(45deg, #28a745, #218838);
+                    /* تدرج أخضر ناعم */
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 25px;
+                    /* جعل الأزرار دائرية */
+                    font-weight: 600;
+                    transition: background 0.3s ease;
+                    /* تأثير عند التحويم */
+                }
+
+                .recommended-products .btn:hover {
+                    background: #1e7e34;
+                    /* تدرج داكن عند التحويم */
+                }
+
+                /* إضافة تأثيرات على النص داخل البطاقات */
+                .recommended-products .card-body h5 {
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    color: #1d8637;
+                    /* اللون الأساسي للنص */
+                }
+
+                .recommended-products .card-body span {
+                    color: #28a745;
+                    /* جعل السعر بلون أخضر */
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                }
+
+                /* تحسين تنسيق البطاقة */
+                .recommended-products .card-body {
+                    padding: 20px;
+                    background-color: #fff;
+                    /* خلفية بيضاء نظيفة */
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                }
+
+                .recommended-products .card-body a {
+                    align-self: flex-start;
+                    /* محاذاة الزر إلى اليسار */
+                    font-size: 1rem;
+                    font-weight: 600;
+                }
+
+                /* مظهر أكثر احترافية في التفاعل */
+                .recommended-products .card-body h5 {
+                    margin-bottom: 15px;
+                }
+
+                /* ترتيب العناصر في النسخ الصغيرة */
+                @media (max-width: 768px) {
+                    .recommended-products .card-body {
+                        padding: 15px;
+                    }
+
+                    .recommended-products .card {
+                        margin-bottom: 20px;
+                    }
                 }
             </style>
